@@ -1,0 +1,68 @@
+<div class="row mx-3">
+    <h2>
+        inventory 
+    </h2>
+    <hr>
+</div>
+
+<form (ngSubmit)="onSubmit()" #inventoryForm="ngForm" class="mx-3 my-2">
+  <div class="row g-3">
+    <div class="col">
+      <label for="productId" class="form-label">Product ID</label>
+      <input type="text" class="form-control" id="productId" name="productId" [(ngModel)]="inventoryData.productId" required>
+    </div>
+    <div class="col">
+      <label for="productName" class="form-label">Product Name</label>
+      <input type="text" class="form-control" id="productName" name="productName" [(ngModel)]="inventoryData.productName" required>
+    </div>
+    <div class="col">
+      <label for="stockAvailable" class="form-label">Stock Available</label>
+      <input type="number" class="form-control" id="stockAvailable" name="stockAvailable" [(ngModel)]="inventoryData.stockAvailable" min="0" required>
+    </div>
+    <div class="col">
+      <label for="reorderStock" class="form-label">Reorder Stock</label>
+      <input type="number" class="form-control" id="reorderStock" name="reorderStock" [(ngModel)]="inventoryData.reorderStock" min="0" required>
+    </div>
+  </div>
+  <div class="mt-3">
+    <button type="submit" class="btn btn-primary" [disabled]="loading || !inventoryForm.form.valid">
+      {{ loading ? 'Saving...' : 'Add Product' }}
+    </button>
+    <button type="button" class="btn btn-secondary ms-2" (click)="resetForm()" [disabled]="loading">Reset</button>
+  </div>
+  <div *ngIf="errorMsg" class="text-danger mt-2">{{ errorMsg }}</div>
+</form>
+
+<table class="table table-hover mx-3">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Stock Available</th>
+      <th scope="col">Reorder Stock</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>Mobile</td>
+      <td>50</td>
+      <td>60</td>
+      <td>
+        <button class="btn btn-info btn-sm mx-1">Edit</button>
+        <button class="btn btn-danger btn-sm mx-1">Delete</button>
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Laptop</td>
+      <td>30</td>
+      <td>100</td>
+      <td>
+        <button class="btn btn-info btn-sm mx-1">Edit</button>
+        <button class="btn btn-danger btn-sm mx-1">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
