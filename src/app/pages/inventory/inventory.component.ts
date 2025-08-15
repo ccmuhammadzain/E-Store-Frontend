@@ -21,12 +21,12 @@ export class InventoryComponent {
   inventoryData: InventoryRequest = {
     productId: '',
     productName: '',
-    stockAvailable: 0,
+    stockAvaliable: 0,
     reorderStock: 0
   };
 
   resetForm() {
-    this.inventoryData = { productId: '', productName: '', stockAvailable: 0, reorderStock: 0 };
+    this.inventoryData = { productId: '', productName: '', stockAvaliable: 0, reorderStock: 0 };
   }
 
   onSubmit() {
@@ -38,7 +38,7 @@ export class InventoryComponent {
       this.errorMsg = 'Product ID and Name are required.';
       return;
     }
-    if (this.inventoryData.stockAvailable < 0 || this.inventoryData.reorderStock < 0) {
+    if (this.inventoryData.stockAvaliable< 0 || this.inventoryData.reorderStock < 0) {
       this.errorMsg = 'Stock values must be non-negative.';
       return;
     }
@@ -83,6 +83,6 @@ export class InventoryComponent {
 interface InventoryRequest {
   productId: string;
   productName: string;
-  stockAvailable: number;
+  stockAvaliable: number;
   reorderStock: number;
 }
