@@ -1,8 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { InventoryService } from '../../core/services/product.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-inventory',
@@ -11,78 +10,71 @@ import { finalize } from 'rxjs';
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.css']
 })
-
-export class InventoryComponent {
-
-  httpClient = inject(HttpClient);
+export class InventoryComponent implements OnInit {
+  products: any[] = [];
   loading = false;
   errorMsg = '';
 
-  inventoryData: InventoryRequest = {
-    productId: '',
-    productName: '',
-    stockAvaliable: 0,
-    reorderStock: 0
+  // Modal control
+  showAddForm = false;
+
+  // New product form model
+  newProduct = {
+    title: '',
+    category: '',
+    brand: '',
+    price: 0,
+    stock: 0
   };
 
-  resetForm() {
-    this.inventoryData = { productId: '', productName: '', stockAvaliable: 0, reorderStock: 0 };
+  constructor(private inventoryService: InventoryService) {}
+
+  ngOnInit() {
+    this.fetchProducts();
   }
 
-  onSubmit() {
-    this.errorMsg = '';
-    const apiUrl = "https://localhost:7132/api/Inventory"; // consider moving to environment file
-
-    // basic client-side validation
-    if (!this.inventoryData.productId || !this.inventoryData.productName) {
-      this.errorMsg = 'Product ID and Name are required.';
-      return;
-    }
-    if (this.inventoryData.stockAvaliable< 0 || this.inventoryData.reorderStock < 0) {
-      this.errorMsg = 'Stock values must be non-negative.';
-      return;
-    }
-    const httpOptions = {
-      headers: new HttpHeaders({
-        Authorization: 'Zain-auth-token',
-        'Content-Type': 'application/json'
-      })
-    };
+  fetchProducts() {
     this.loading = true;
-    this.httpClient
-      .post(apiUrl, this.inventoryData, httpOptions)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (v: unknown) => {
-          console.log('Inventory POST response:', v);
-          alert('Saved successfully');
-          this.resetForm();
-        },
-        error: (e: any) => {
-          // Try to extract useful info
-            const status = e?.status;
-            const statusText = e?.statusText;
-            const serverMsg = e?.error?.message || e?.message || '';
-            this.errorMsg = `Save failed${status ? ' (' + status + (statusText ? ' ' + statusText : '') + ')' : ''}. ${serverMsg}`.trim();
-            console.error('Inventory POST error detail:', e);
+    this.inventoryService.getInventory().subscribe({
+      next: (data: any) => {
+        console.log('API Response:', data);
+        // If API returns { products: [...] }, pick that
+        if (data && Array.isArray(data.products)) {
+          this.products = data.products;
+        } else if (Array.isArray(data)) {
+          this.products = data;
+        } else {
+          this.products = [];
         }
-      });
-
-
-
-
-
+        this.loading = false;
+      },
+      error: () => {
+        this.errorMsg = 'Failed to load inventory.';
+        this.loading = false;
+      }
+    });
   }
 
-}
+  // Add product form submit
+  addProduct() {
+    console.log('New Product:', this.newProduct);
 
-interface InventoryRequest {
-  productId: string;
-  productName: string;
-  stockAvaliable: number;
-  reorderStock: number;
+    // Later: call this.inventoryService.addProduct(this.newProduct).subscribe(...)
+    // For now, just push to array locally
+    this.products.push({ ...this.newProduct });
+
+    // Reset form & close modal
+    this.resetForm();
+    this.showAddForm = false;
+  }
+
+  resetForm() {
+    this.newProduct = {
+      title: '',
+      category: '',
+      brand: '',
+      price: 0,
+      stock: 0
+    };
+  }
 }

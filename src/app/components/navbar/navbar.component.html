@@ -1,13 +1,11 @@
 <nav class="bg-gray-800 text-white px-4 py-3">
   <div class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto">
     
-    <!-- Logo -->
     <a routerLink="/home" class="flex items-center gap-2 text-lg font-bold">
       <img src="assets/fial-logo.png" alt="E-Store Logo" class="h-8 w-8 object-contain select-none" />
       <span>E-Store</span>
     </a>
 
-    <!-- Mobile Menu Button -->
     <button 
       (click)="isMenuOpen = !isMenuOpen"
       class="inline-flex items-center p-2 text-gray-400 rounded-lg md:hidden hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600"
@@ -19,7 +17,6 @@
       </svg>
     </button>
 
-    <!-- Navigation Links -->
     <div [ngClass]="{'hidden': !isMenuOpen}" class="w-full md:flex md:items-center md:w-auto">
       <ul class="flex flex-col mt-3 space-y-2 md:space-y-0 md:flex-row md:space-x-6 md:mt-0">
         <li>
@@ -44,7 +41,6 @@
         </li>
       </ul>
 
-      <!-- Search Bar -->
       <form class="flex items-center mt-3 md:mt-0 md:ml-6" role="search">
         <input 
           type="search" 

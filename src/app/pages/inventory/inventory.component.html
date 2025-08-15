@@ -1,107 +1,76 @@
-<div class="px-4">
-  <h2 class="text-2xl font-bold">Inventory</h2>
-  <hr class="my-2 border-gray-300">
-</div>
-
-<form (ngSubmit)="onSubmit()" #inventoryForm="ngForm" class="px-4 my-4 space-y-4">
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <div>
-      <label for="productId" class="block text-sm font-medium text-gray-700">Product ID</label>
-      <input
-        type="text"
-        id="productId"
-        name="productId"
-        [(ngModel)]="inventoryData.productId"
-        required
-        class="mt-1 block w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-      >
-    </div>
-    <div>
-      <label for="productName" class="block text-sm font-medium text-gray-700">Product Name</label>
-      <input
-        type="text"
-        id="productName"
-        name="productName"
-        [(ngModel)]="inventoryData.productName"
-        required
-        class="mt-1 block w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-      >
-    </div>
-    <div>
-      <label for="stockAvaliable" class="block text-sm font-medium text-gray-700">Stock Available</label>
-      <input
-        type="number"
-        id="stockAvaliable"
-        name="stockAvaliable"
-        [(ngModel)]="inventoryData.stockAvaliable"
-        min="0"
-        required
-        class="mt-1 block w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-      >
-    </div>
-    <div>
-      <label for="reorderStock" class="block text-sm font-medium text-gray-700">Reorder Stock</label>
-      <input
-        type="number"
-        id="reorderStock"
-        name="reorderStock"
-        [(ngModel)]="inventoryData.reorderStock"
-        min="0"
-        required
-        class="mt-1 block w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-      >
-    </div>
-  </div>
-
-  <div class="flex items-center space-x-2">
-    <button
-      type="submit"
-      [disabled]="loading || !inventoryForm.form.valid"
-      class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-    >
-      {{ loading ? 'Saving...' : 'Add Product' }}
-    </button>
-    <button
-      type="button"
-      (click)="resetForm()"
-      [disabled]="loading"
-      class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 disabled:opacity-50"
-    >
-      Reset
+<div class="p-6">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold">Inventory</h2>
+    <button 
+      class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+      (click)="showAddForm = true">
+      + Add Product
     </button>
   </div>
 
-  <div *ngIf="errorMsg" class="text-red-600 mt-2">{{ errorMsg }}</div>
-</form>
+  <div *ngIf="showAddForm" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+      <h3 class="text-lg font-bold mb-4">Add Product</h3>
 
-<div class="px-4 overflow-x-auto">
-  <table class="min-w-full border border-gray-300 rounded-lg overflow-hidden">
+      <form (ngSubmit)="addProduct()" #productForm="ngForm">
+        <div class="mb-3">
+          <label class="block mb-1">Title</label>
+          <input type="text" [(ngModel)]="newProduct.title" name="title" class="w-full border px-3 py-2 rounded" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="block mb-1">Category</label>
+          <input type="text" [(ngModel)]="newProduct.category" name="category" class="w-full border px-3 py-2 rounded" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="block mb-1">Brand</label>
+          <input type="text" [(ngModel)]="newProduct.brand" name="brand" class="w-full border px-3 py-2 rounded">
+        </div>
+
+        <div class="mb-3">
+          <label class="block mb-1">Price ($)</label>
+          <input type="number" [(ngModel)]="newProduct.price" name="price" class="w-full border px-3 py-2 rounded" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="block mb-1">Stock</label>
+          <input type="number" [(ngModel)]="newProduct.stock" name="stock" class="w-full border px-3 py-2 rounded" required>
+        </div>
+
+        <div class="flex justify-end mt-4">
+          <button type="button" class="px-4 py-2 bg-gray-300 rounded mr-2" (click)="showAddForm = false">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <table class="w-full border-collapse bg-white shadow rounded-lg overflow-hidden">
     <thead class="bg-gray-100">
       <tr>
-        <th class="px-4 py-2 text-left border-b">#</th>
-        <th class="px-4 py-2 text-left border-b">Product Name</th>
-        <th class="px-4 py-2 text-left border-b">Stock Available</th>
-        <th class="px-4 py-2 text-left border-b">Reorder Stock</th>
-        <th class="px-4 py-2 text-left border-b">Action</th>
+        <th class="px-4 py-2 border-b text-left">#</th>
+        <th class="px-4 py-2 border-b text-left">Image</th>
+        <th class="px-4 py-2 border-b text-left">Product</th>
+        <th class="px-4 py-2 border-b text-left">Category</th>
+        <th class="px-4 py-2 border-b text-left">Brand</th>
+        <th class="px-4 py-2 border-b text-right">Price ($)</th>
+        <th class="px-4 py-2 border-b text-right">Stock</th>
+        <th class="px-4 py-2 border-b text-center">Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr class="hover:bg-gray-50">
-        <td class="px-4 py-2 border-b">1</td>
-        <td class="px-4 py-2 border-b">Mobile</td>
-        <td class="px-4 py-2 border-b">50</td>
-        <td class="px-4 py-2 border-b">60</td>
+      <tr *ngFor="let p of products; let i = index" class="hover:bg-gray-50">
+        <td class="px-4 py-2 border-b">{{ i + 1 }}</td>
         <td class="px-4 py-2 border-b">
-          <button class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">Edit</button>
-          <button class="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 ml-2">Delete</button>
+          <img [src]="p.image" alt="{{ p.title }}" class="w-12 h-12 object-cover rounded">
         </td>
-      </tr>
-      <tr class="hover:bg-gray-50">
-        <td class="px-4 py-2 border-b">2</td>
-        <td class="px-4 py-2 border-b">Laptop</td>
-        <td class="px-4 py-2 border-b">30</td>
-        <td class="px-4 py-2 border-b">100</td>
-        <td class="px-4 py-2 border-b">
+        <td class="px-4 py-2 border-b">{{ p.title }}</td>
+        <td class="px-4 py-2 border-b">{{ p.category }}</td>
+        <td class="px-4 py-2 border-b">{{ p.brand || '-' }}</td>
+        <td class="px-4 py-2 border-b text-right">{{ p.price | currency:'USD':'symbol':'1.2-2' }}</td>
+        <td class="px-4 py-2 border-b text-right">{{ p.stock }}</td>
+        <td class="px-4 py-2 border-b text-center">
           <button class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">Edit</button>
           <button class="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 ml-2">Delete</button>
         </td>
