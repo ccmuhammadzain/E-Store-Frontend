@@ -5,76 +5,77 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-inventory',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './inventory.component.html',
-  styleUrls: ['./inventory.component.css']
+  styleUrls: ['./inventory.component.css'],
+  imports: [CommonModule, FormsModule]
 })
 export class InventoryComponent implements OnInit {
   products: any[] = [];
-  loading = false;
-  errorMsg = '';
-
-  // Modal control
-  showAddForm = false;
-
-  // New product form model
-  newProduct = {
-    title: '',
-    category: '',
-    brand: '',
-    price: 0,
-    stock: 0
-  };
+  currentProduct: any = {};
+  showForm = false;
+  isEdit = false;
 
   constructor(private inventoryService: InventoryService) {}
 
-  ngOnInit() {
-    this.fetchProducts();
+  ngOnInit(): void {
+    this.getProducts();
   }
 
-  fetchProducts() {
-    this.loading = true;
+  // ✅ Load all products
+  getProducts(): void {
     this.inventoryService.getInventory().subscribe({
-      next: (data: any) => {
-        console.log('API Response:', data);
-        // If API returns { products: [...] }, pick that
-        if (data && Array.isArray(data.products)) {
-          this.products = data.products;
-        } else if (Array.isArray(data)) {
-          this.products = data;
-        } else {
-          this.products = [];
-        }
-        this.loading = false;
-      },
-      error: () => {
-        this.errorMsg = 'Failed to load inventory.';
-        this.loading = false;
-      }
+      next: (data) => (this.products = data),
+      error: (err) => console.error('Error fetching products:', err)
     });
   }
 
-  // Add product form submit
-  addProduct() {
-    console.log('New Product:', this.newProduct);
-
-    // Later: call this.inventoryService.addProduct(this.newProduct).subscribe(...)
-    // For now, just push to array locally
-    this.products.push({ ...this.newProduct });
-
-    // Reset form & close modal
-    this.resetForm();
-    this.showAddForm = false;
-  }
-
-  resetForm() {
-    this.newProduct = {
+  // ✅ Open Add form
+  openAddForm(): void {
+    this.currentProduct = {
+      id: 0,
       title: '',
       category: '',
       brand: '',
       price: 0,
       stock: 0
     };
+    this.isEdit = false;
+    this.showForm = true;
+  }
+
+  // ✅ Open Edit form
+  openEditForm(product: any): void {
+    this.currentProduct = { ...product };
+    this.isEdit = true;
+    this.showForm = true;
+  }
+
+  // ✅ Save (POST/PUT)
+  saveProduct(): void {
+    if (this.isEdit) {
+      this.inventoryService.updateProduct(this.currentProduct.id, this.currentProduct).subscribe({
+        next: () => {
+          this.getProducts();
+          this.showForm = false;
+        },
+        error: (err) => console.error('Error updating product:', err)
+      });
+    } else {
+      this.inventoryService.addProduct(this.currentProduct).subscribe({
+        next: () => {
+          this.getProducts();
+          this.showForm = false;
+        },
+        error: (err) => console.error('Error saving product:', err)
+      });
+    }
+  }
+
+  // ✅ Delete
+  deleteProduct(id: number): void {
+    this.inventoryService.deleteProduct(id).subscribe({
+      next: () => this.getProducts(),
+      error: (err) => console.error('Error deleting product:', err)
+    });
   }
 }
