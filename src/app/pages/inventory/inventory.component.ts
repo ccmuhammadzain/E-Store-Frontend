@@ -37,7 +37,8 @@ export class InventoryComponent implements OnInit {
       category: '',
       brand: '',
       price: 0,
-      stock: 0
+      stock: 0,
+      productImage: ''   // ✅ Added image field
     };
     this.isEdit = false;
     this.showForm = true;

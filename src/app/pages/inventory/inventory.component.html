@@ -39,6 +39,13 @@
     <input type="number" [(ngModel)]="currentProduct.stock" name="stock" class="w-full border px-3 py-2 rounded" required>
   </div>
 
+  <div class="mb-3">
+  <label class="block mb-1">Image URL</label>
+  <input type="text" [(ngModel)]="currentProduct.productImage" name="productImage" 
+         class="w-full border px-3 py-2 rounded">
+  </div>
+
+
   <div class="flex justify-end mt-4">
     <button type="button" class="px-4 py-2 bg-gray-300 rounded mr-2" (click)="showForm = false">Cancel</button>
     <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
@@ -55,6 +62,7 @@
     <thead class="bg-gray-100">
       <tr>
         <th class="px-4 py-2 border-b text-left">#</th>
+        <th class="px-4 py-2 border-b text-left">Image</th>
         <th class="px-4 py-2 border-b text-left">Product</th>
         <th class="px-4 py-2 border-b text-left">Category</th>
         <th class="px-4 py-2 border-b text-left">Brand</th>
@@ -66,6 +74,9 @@
     <tbody>
       <tr *ngFor="let p of products; let i = index" class="hover:bg-gray-50">
         <td class="px-4 py-2 border-b">{{ i + 1 }}</td>
+        <td class="px-4 py-2 border-b">
+        <img [src]="p.productImage" alt="Product" class="w-12 h-12 object-cover rounded">
+        </td>
         <td class="px-4 py-2 border-b">{{ p.title }}</td>
         <td class="px-4 py-2 border-b">{{ p.category }}</td>
         <td class="px-4 py-2 border-b">{{ p.brand || '-' }}</td>
