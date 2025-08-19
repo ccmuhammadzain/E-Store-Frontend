@@ -3,6 +3,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { InventoryComponent } from './pages/inventory/inventory.component';
 import { CustomerComponent } from './pages/customer/customer.component';
 import { BillsComponent } from './pages/bills/bills.component';
+import { ShopComponent } from './pages/shop/shop.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -25,7 +26,15 @@ export const routes: Routes = [
     data: { roles: ['Admin'] } 
   },
 
-  // Bills: only Customer can access (or Admin if needed)
+  // Shop: only Customer can access
+  { 
+    path: 'shop', 
+    component: ShopComponent, 
+    canActivate: [authGuard],
+    data: { roles: ['Customer'] } 
+  },
+
+  // Bills: only Customer can access (Admin optional)
   { 
     path: 'bills', 
     component: BillsComponent, 
@@ -37,5 +46,6 @@ export const routes: Routes = [
   { path: 'login', loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent) },
   { path: 'signup', loadComponent: () => import('./components/signup/signup.component').then(m => m.SignupComponent) },
 
+  // Fallback
   { path: '**', redirectTo: 'home' }
 ];
