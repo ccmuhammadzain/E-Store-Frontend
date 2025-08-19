@@ -1,19 +1,33 @@
 // product.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryService {
-  private apiUrl = 'https://dummyjson.com/products';
+  private apiUrl = 'http://localhost:5188/api/Products';
 
   constructor(private http: HttpClient) {}
 
+  // ✅ Get all products
   getInventory(): Observable<any[]> {
-    return this.http.get<any>(this.apiUrl).pipe(
-      map((res) => res.products || []) // Extract the products array
-    );
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  // ✅ Add new product
+  addProduct(product: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, product);
+  }
+
+  // ✅ Update product
+  updateProduct(id: number, product: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}`, product);
+  }
+
+  // ✅ Delete product
+  deleteProduct(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 }
