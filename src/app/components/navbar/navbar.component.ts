@@ -12,24 +12,19 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent {
   isMenuOpen = false;
-  user: string | null = null;   
-  constructor(private authService: AuthService, private router: Router) {
-    
-    const savedUser = this.authService.getUser();
-    if (savedUser) {
-      this.user = savedUser.name || savedUser.email || 'User';
-    }
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  get user() {
+    return this.authService.getUser();
   }
 
-  
   get isLoggedIn(): boolean {
-    return !!this.authService.getToken();
+    return !!this.user;
   }
 
-  
   logout() {
     this.authService.logout();
-    this.user = null;
     this.router.navigate(['/login']);
   }
 }
