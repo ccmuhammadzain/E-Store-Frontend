@@ -19,7 +19,14 @@ export class LoginComponent {
     this.authService.login(this.user).subscribe({
       next: (res: any) => {
         this.authService.saveToken(res.token);
-        this.router.navigate(['/']); // redirect after login
+        this.authService.saveUser(res); // ✅ Save user info (including role)
+
+        // ✅ Navigate based on role
+        if (res.role === 'Admin') {
+          this.router.navigate(['/inventory']);
+        } else {
+          this.router.navigate(['/shop']);
+        }
       },
       error: (err) => this.message = err.error
     });

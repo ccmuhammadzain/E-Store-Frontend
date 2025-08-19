@@ -1,6 +1,6 @@
 <nav class="bg-gray-800 text-white px-4 py-3">
   <div class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto">
-    
+
     <!-- Logo -->
     <a routerLink="/home" class="flex items-center gap-2 text-lg font-bold">
       <img src="assets/fial-logo.png" alt="E-Store Logo" class="h-8 w-8 object-contain select-none" />
@@ -27,24 +27,35 @@
             Home
           </a>
         </li>
-        <li>
+
+        <!-- Admin sees Inventory -->
+        <li *ngIf="user?.role === 'Admin'">
           <a routerLink="/inventory" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">
             Inventory
           </a>
         </li>
-        <li>
-          <a routerLink="/customers" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">
-            Customers
+
+        <!-- Customer sees Shop -->
+        <li *ngIf="user?.role === 'Customer'">
+          <a routerLink="/shop" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">
+            Shop
           </a>
         </li>
-        <li>
+
+        <!-- Bills for both -->
+        <li *ngIf="user">
           <a routerLink="/bills" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">
             Bills
           </a>
         </li>
-      </ul>
 
-      
+        <!-- Customers only for Admin -->
+        <li *ngIf="user?.role === 'Admin'">
+          <a routerLink="/customers" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">
+            Customers
+          </a>
+        </li>
+      </ul>
 
       <!-- Search -->
       <form class="flex items-center mt-3 md:mt-0 md:ml-6" role="search">
@@ -64,33 +75,31 @@
     </div>
 
     <!-- 🔑 Auth Links -->
-<div class="flex items-center mt-3 md:mt-0 md:ml-6 space-x-4">
-  <!-- Show Login/Signup if not logged in -->
-  <ng-container *ngIf="!isLoggedIn">
-    <a 
-      routerLink="/login" 
-      class="px-4 py-1.5 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white font-medium shadow">
-      Login
-    </a>
-    <a 
-      routerLink="/signup" 
-      class="px-4 py-1.5 rounded-lg border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-white font-medium shadow">
-      Signup
-    </a>
-  </ng-container>
+    <div class="flex items-center mt-3 md:mt-0 md:ml-6 space-x-4">
+      <!-- Login/Signup if not logged in -->
+      <ng-container *ngIf="!isLoggedIn">
+        <a 
+          routerLink="/login" 
+          class="px-4 py-1.5 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white font-medium shadow">
+          Login
+        </a>
+        <a 
+          routerLink="/signup" 
+          class="px-4 py-1.5 rounded-lg border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-white font-medium shadow">
+          Signup
+        </a>
+      </ng-container>
 
-  <!-- Show Logout if logged in -->
-  <ng-container *ngIf="isLoggedIn">
-    <span class="text-gray-300">Hi, {{ user }}</span>
-    <button 
-      (click)="logout()" 
-      class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium shadow">
-      Logout
-    </button>
-  </ng-container>
-</div>
-
-    
+      <!-- Logout if logged in -->
+      <ng-container *ngIf="isLoggedIn">
+        <span class="text-gray-300">Hi, {{ user?.username }}</span>
+        <button 
+          (click)="logout()" 
+          class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium shadow">
+          Logout
+        </button>
+      </ng-container>
+    </div>
 
   </div>
 </nav>
