@@ -1,11 +1,13 @@
 <nav class="bg-gray-800 text-white px-4 py-3">
   <div class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto">
     
+    <!-- Logo -->
     <a routerLink="/home" class="flex items-center gap-2 text-lg font-bold">
       <img src="assets/fial-logo.png" alt="E-Store Logo" class="h-8 w-8 object-contain select-none" />
       <span>E-Store</span>
     </a>
 
+    <!-- Mobile Menu Toggle -->
     <button 
       (click)="isMenuOpen = !isMenuOpen"
       class="inline-flex items-center p-2 text-gray-400 rounded-lg md:hidden hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600"
@@ -17,6 +19,7 @@
       </svg>
     </button>
 
+    <!-- Nav Items -->
     <div [ngClass]="{'hidden': !isMenuOpen}" class="w-full md:flex md:items-center md:w-auto">
       <ul class="flex flex-col mt-3 space-y-2 md:space-y-0 md:flex-row md:space-x-6 md:mt-0">
         <li>
@@ -41,6 +44,9 @@
         </li>
       </ul>
 
+      
+
+      <!-- Search -->
       <form class="flex items-center mt-3 md:mt-0 md:ml-6" role="search">
         <input 
           type="search" 
@@ -56,5 +62,35 @@
         </button>
       </form>
     </div>
+
+    <!-- 🔑 Auth Links -->
+<div class="flex items-center mt-3 md:mt-0 md:ml-6 space-x-4">
+  <!-- Show Login/Signup if not logged in -->
+  <ng-container *ngIf="!isLoggedIn">
+    <a 
+      routerLink="/login" 
+      class="px-4 py-1.5 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white font-medium shadow">
+      Login
+    </a>
+    <a 
+      routerLink="/signup" 
+      class="px-4 py-1.5 rounded-lg border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-white font-medium shadow">
+      Signup
+    </a>
+  </ng-container>
+
+  <!-- Show Logout if logged in -->
+  <ng-container *ngIf="isLoggedIn">
+    <span class="text-gray-300">Hi, {{ user }}</span>
+    <button 
+      (click)="logout()" 
+      class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium shadow">
+      Logout
+    </button>
+  </ng-container>
+</div>
+
+    
+
   </div>
 </nav>
