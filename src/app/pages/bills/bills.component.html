@@ -1,1 +1,57 @@
-<p>bills works!</p>
+<div class="p-4 space-y-4">
+  <div class="flex items-center justify-between">
+    <h2 class="text-xl font-bold">Bills</h2>
+    <button (click)="createSampleBill()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm font-medium">
+      Create Sample Bill
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="text-sm text-gray-500">Loading bills...</div>
+  <div *ngIf="error" class="text-sm text-red-600">{{ error }}</div>
+
+  <div *ngIf="!loading && bills.length === 0" class="text-sm text-gray-500">No bills found.</div>
+
+  <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div *ngFor="let bill of bills" class="border rounded p-3 bg-white shadow-sm space-y-2">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="font-semibold">Bill #{{ bill.id }}</p>
+          <p class="text-xs text-gray-500">User: {{ bill.user?.username || bill.userId }}</p>
+        </div>
+        <span class="px-2 py-0.5 rounded text-xs font-medium"
+          [ngClass]="{
+            'bg-yellow-100 text-yellow-800': bill.status === 'Pending',
+            'bg-green-100 text-green-800': bill.status === 'Paid',
+            'bg-red-100 text-red-800': bill.status === 'Canceled'
+          }">{{ bill.status }}</span>
+      </div>
+      <p class="text-sm font-medium">Total: <span class="font-semibold">{{ bill.totalAmount | number:'1.0-0' }}</span></p>
+      <div class="border rounded">
+        <table class="w-full text-xs">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="text-left px-2 py-1 font-semibold">Product</th>
+              <th class="text-right px-2 py-1 font-semibold">Qty</th>
+              <th class="text-right px-2 py-1 font-semibold">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of bill.billItems" class="border-t">
+              <td class="px-2 py-1">{{ item.product?.title || item.productId }}</td>
+              <td class="px-2 py-1 text-right">{{ item.quantity }}</td>
+              <td class="px-2 py-1 text-right">{{ item.price | number:'1.0-0' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="flex gap-2 pt-1">
+        <button (click)="payBill(bill)" [disabled]="bill.status !== 'Pending'" class="px-2 py-1 text-xs rounded bg-green-600 disabled:opacity-40 disabled:cursor-not-allowed text-white hover:bg-green-700">
+          Pay
+        </button>
+        <button (click)="deleteBill(bill)" [disabled]="bill.status === 'Paid'" class="px-2 py-1 text-xs rounded bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed text-white hover:bg-red-700">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
