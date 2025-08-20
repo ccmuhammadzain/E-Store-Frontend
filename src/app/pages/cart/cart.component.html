@@ -1,0 +1,52 @@
+<div class="p-6">
+  <h2 class="text-2xl font-bold mb-4">🛒 Your Cart</h2>
+
+  <div *ngIf="cart.length > 0; else emptyCart">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="bg-gray-200 text-left">
+          <th class="p-2">Product</th>
+          <th class="p-2">Price</th>
+          <th class="p-2">Quantity</th>
+          <th class="p-2">Total</th>
+          <th class="p-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of cart" class="border-b">
+          <td class="p-2">{{ p.title }}</td>
+          <td class="p-2">${{ p.price }}</td>
+          <td class="p-2 flex items-center space-x-2">
+            <button class="px-2 py-1 bg-gray-300 rounded" (click)="decreaseQty(p)">-</button>
+            <span>{{ p.quantity }}</span>
+            <button class="px-2 py-1 bg-gray-300 rounded" (click)="increaseQty(p)">+</button>
+          </td>
+          <td class="p-2">${{ p.price * p.quantity }}</td>
+          <td class="p-2">
+            <button class="text-red-500 hover:underline" (click)="removeFromCart(p.id)">Remove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Summary -->
+    <div class="mt-6 flex justify-between items-center">
+      <p class="text-lg font-semibold">
+        Total ({{ getTotalItems() }} items): 
+        <span class="text-green-600">${{ getTotalPrice() }}</span>
+      </p>
+      <div class="space-x-3">
+        <button class="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded" (click)="clearCart()">
+          Clear Cart
+        </button>
+        <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded" (click)="checkout()">
+          Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #emptyCart>
+    <p class="text-gray-500">Your cart is empty. 🛒</p>
+  </ng-template>
+</div>

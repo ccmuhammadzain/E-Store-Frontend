@@ -49,6 +49,16 @@
           </a>
         </li>
 
+        <!-- Cart for Customers -->
+        <li *ngIf="user?.role === 'Customer'">
+          <a routerLink="/cart" routerLinkActive="text-yellow-400" class="hover:text-yellow-300 flex items-center gap-1">
+            🛒 Cart
+            <span *ngIf="cartItemCount > 0" class="bg-yellow-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+              {{ cartItemCount }}
+            </span>
+          </a>
+        </li>
+
         <!-- Customers only for Admin -->
         <li *ngIf="user?.role === 'Admin'">
           <a routerLink="/customers" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">
