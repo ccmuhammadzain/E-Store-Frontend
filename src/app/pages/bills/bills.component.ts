@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgClass, DecimalPipe } from '@angular/common';
 import { BillService, BillCreateDto, BillDto } from '../../core/services/bill.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-bills',
@@ -14,10 +15,22 @@ export class BillsComponent implements OnInit {
   bills: BillDto[] = [];
   loading = false;
   error: string | null = null;
+  newBillId?: number;
+  lastErrorCode?: string;
 
-  constructor(private billService: BillService) {}
+  constructor(private billService: BillService, private router: Router) {}
 
   ngOnInit(): void {
+    const navState: any = history.state;
+    if (navState) {
+      if (navState.newBillId) this.newBillId = navState.newBillId;
+      if (navState.createdBill) {
+        const incoming: BillDto = navState.createdBill;
+        if (!this.bills.some(b => b.id === incoming.id)) {
+          this.bills.unshift(incoming);
+        }
+      }
+    }
     this.loadBills();
   }
 
@@ -30,15 +43,19 @@ export class BillsComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        this.error = 'Failed to load bills';
+    this.error = err?.error?.error || 'Failed to load bills';
+    this.lastErrorCode = err?.error?.code;
       },
-      complete: () => (this.loading = false)
+      complete: () => {
+        this.loading = false;
+      }
     });
   }
 
+  // Retry logic removed: server now returns hydrated bill in create response and list fetch is immediate.
+
   createSampleBill() {
     const newBill: BillCreateDto = {
-      userId: 1,
       billItems: [
         { productId: 12, quantity: 2 },
         { productId: 13, quantity: 1 }
@@ -46,15 +63,24 @@ export class BillsComponent implements OnInit {
     };
 
     this.billService.createBill(newBill).subscribe({
-      next: () => this.loadBills(),
-      error: (err) => console.error(err)
+      next: (bill) => {
+        // Prepend freshly created bill without reloading entire list
+        this.bills = [bill, ...this.bills];
+      },
+      error: (err) => {
+        console.error(err);
+        this.error = err?.error?.error || 'Failed to create bill';
+        this.lastErrorCode = err?.error?.code;
+      }
     });
   }
 
   payBill(bill: BillDto) {
     if (bill.status !== 'Pending') return;
     this.billService.payBill(bill.id).subscribe({
-      next: () => this.loadBills(),
+      next: () => {
+        this.router.navigate(['/order-confirmation'], { state: { billId: bill.id } });
+      },
       error: (err) => console.error(err)
     });
   }

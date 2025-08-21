@@ -10,7 +10,6 @@ export interface BillItemCreateDto {
 }
 
 export interface BillCreateDto {
-  userId: number;
   billItems: BillItemCreateDto[];
 }
 

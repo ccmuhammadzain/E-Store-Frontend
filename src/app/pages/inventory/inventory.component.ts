@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { InventoryService } from '../../core/services/product.service';
 import { AuthService } from '../../core/services/auth.service';
+import { CartService } from '../../core/services/cart.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -16,22 +17,19 @@ export class InventoryComponent implements OnInit {
   showForm = false;
   isEdit = false;
   user: any = null;
-  cart: any[] = [];
+  // cart managed by shared service now
 
   constructor(
     private inventoryService: InventoryService,
-    private authService: AuthService
+  private authService: AuthService,
+  private cartService: CartService
   ) {}
 
   ngOnInit(): void {
     this.user = this.authService.getUser(); // ✅ Get logged-in user
     this.getProducts();
 
-    // Load cart from localStorage if customer
-    if (this.user?.role === 'Customer') {
-      const savedCart = localStorage.getItem('cart');
-      this.cart = savedCart ? JSON.parse(savedCart) : [];
-    }
+  // Nothing to load; service keeps state
   }
 
   // ✅ Load all products
@@ -104,15 +102,7 @@ export class InventoryComponent implements OnInit {
   // ✅ Add to cart for Customer
   addToCart(product: any): void {
     if (this.user?.role !== 'Customer') return;
-
-    const existing = this.cart.find(p => p.id === product.id);
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      this.cart.push({ ...product, quantity: 1 });
-    }
-
-    localStorage.setItem('cart', JSON.stringify(this.cart));
+    this.cartService.addToCart(product);
     alert(`${product.title} added to cart!`);
   }
 }

@@ -39,8 +39,9 @@
         <button class="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded" (click)="clearCart()">
           Clear Cart
         </button>
-        <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded" (click)="checkout()">
-          Checkout
+        <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded disabled:opacity-40 disabled:cursor-not-allowed" (click)="checkout()" [disabled]="loading">
+          <span *ngIf="!loading">Checkout</span>
+          <span *ngIf="loading">Processing...</span>
         </button>
       </div>
     </div>
@@ -49,4 +50,5 @@
   <ng-template #emptyCart>
     <p class="text-gray-500">Your cart is empty. 🛒</p>
   </ng-template>
+  <div *ngIf="error" class="mt-4 text-sm text-red-600">{{ error }}</div>
 </div>
