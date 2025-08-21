@@ -1,17 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { CartService } from '../../core/services/cart.service';
 import { CommonModule } from '@angular/common';
+import { BillService, BillCreateDto } from '../../core/services/bill.service';
+import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule,],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './cart.component.html',
-  styleUrl: './cart.component.css'
+  styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit {
   cart: any[] = [];
+  loading = false;
+  error: string | null = null;
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private billService: BillService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadCart();
@@ -52,8 +63,40 @@ export class CartComponent implements OnInit {
   }
 
   checkout() {
-    alert('Proceeding to checkout...');
-    // later redirect to Bills page
+    if (this.cart.length === 0) return;
+    const user = this.authService.getUser();
+    if (!user) {
+      this.error = 'You must be logged in.';
+      return;
+    }
+
+    const payload: BillCreateDto = {
+      billItems: this.cart.map(p => ({ productId: p.id, quantity: p.quantity }))
+    };
+
+  console.log('Checkout payload', payload);
+    this.loading = true;
+    this.error = null;
+    this.billService.createBill(payload).subscribe({
+      next: bill => {
+        console.log('Bill created response', bill);
+        this.cartService.clearCart();
+        this.router.navigate(['/bills'], { state: { newBillId: bill.id, createdBill: bill } });
+      },
+      error: err => {
+        console.error('Checkout error', err);
+        const backendMsg = err?.error?.error;
+        const code = err?.error?.code;
+        if (err.status === 401) {
+          this.error = backendMsg || 'Unauthorized. Please log in again.';
+        } else if (backendMsg) {
+          this.error = backendMsg + (code ? ` (code: ${code})` : '');
+        } else {
+          this.error = 'Checkout failed';
+        }
+      },
+      complete: () => this.loading = false
+    });
   }
 }
 

@@ -2,12 +2,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryService {
-  private apiUrl = 'http://localhost:5188/api/Products';
+  // Use environment base; prefer https port 7188 consistent with other services
+  private apiUrl = `${environment.apiBaseUrl}/api/Products`;
 
   constructor(private http: HttpClient) {}
 

@@ -6,6 +6,7 @@ import { BillsComponent } from './pages/bills/bills.component';
 import { ShopComponent } from './pages/shop/shop.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { authGuard } from './guards/auth.guard';
+import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -48,6 +49,12 @@ export const routes: Routes = [
   component: CartComponent,
   canActivate: [authGuard],
   data: { roles: ['Customer'] } 
+  },
+  { 
+    path: 'order-confirmation', 
+    component: OrderConfirmationComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Customer'] }
   },
 
   // Auth pages
