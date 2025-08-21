@@ -70,9 +70,21 @@ export class CartComponent implements OnInit {
       return;
     }
 
-    const payload: BillCreateDto = {
-      billItems: this.cart.map(p => ({ productId: p.id, quantity: p.quantity }))
-    };
+    // Consolidate duplicates & filter invalid quantities
+    const consolidated: { productId: number; quantity: number }[] = [];
+    const qtyMap = new Map<number, number>();
+    for (const p of this.cart) {
+      if (p.quantity <= 0) continue; // skip invalid
+      qtyMap.set(p.id, (qtyMap.get(p.id) || 0) + p.quantity);
+    }
+    qtyMap.forEach((q, pid) => consolidated.push({ productId: pid, quantity: q }));
+
+    if (consolidated.length === 0) {
+      this.error = 'No valid items to checkout';
+      return;
+    }
+
+    const payload: BillCreateDto = { billItems: consolidated };
 
   console.log('Checkout payload', payload);
     this.loading = true;
@@ -89,6 +101,14 @@ export class CartComponent implements OnInit {
         const code = err?.error?.code;
         if (err.status === 401) {
           this.error = backendMsg || 'Unauthorized. Please log in again.';
+        } else if (err.status === 500) {
+          this.error = backendMsg ? `Server error: ${backendMsg}` : 'Server error creating bill';
+          if (code) this.error += ` (code: ${code})`;
+          // Attempt to extract raw body if no structured error
+          if (!backendMsg && err.error && err.error instanceof Blob) {
+            const blob = err.error as Blob;
+            blob.text().then(t => console.log('Raw 500 body:', t));
+          }
         } else if (backendMsg) {
           this.error = backendMsg + (code ? ` (code: ${code})` : '');
         } else {

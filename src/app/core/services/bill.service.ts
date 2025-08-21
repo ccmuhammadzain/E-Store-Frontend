@@ -33,9 +33,25 @@ export interface BillDto {
   userId: number;
   totalAmount: number;
   status: BillStatus;
+  paidAt?: string;
+  paymentReference?: string;
+  customerName?: string;
+  addressLine1?: string;
+  city?: string;
+  country?: string;
+  phone?: string;
   createdAt?: string;
   billItems: BillItemDto[];
   user?: { id: number; username?: string };
+}
+
+export interface BillPaymentDto {
+  customerName: string;
+  addressLine1: string;
+  city: string;
+  country: string;
+  phone: string;
+  paymentReference?: string;
 }
 
 @Injectable({
@@ -62,7 +78,11 @@ export class BillService {
   }
 
   payBill(id: number): Observable<BillDto> {
-    return this.http.post<BillDto>(`${this.apiUrl}/${id}/pay`, {});
+    throw new Error('Deprecated: use payBillWithDetails');
+  }
+
+  payBillWithDetails(id: number, payload: BillPaymentDto): Observable<BillDto> {
+    return this.http.post<BillDto>(`${this.apiUrl}/${id}/pay`, payload);
   }
 
   deleteBill(id: number): Observable<void> {
