@@ -1,19 +1,17 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
   private cart: any[] = [];
+  cartChanged = new Subject<void>(); // 🔔 notify on cart updates
 
-  constructor() {}
-
-  // Get current cart
   getCart() {
     return this.cart;
   }
 
-  // Add product to cart
   addToCart(product: any) {
     const existing = this.cart.find(p => p.id === product.id);
     if (existing) {
@@ -21,24 +19,23 @@ export class CartService {
     } else {
       this.cart.push({ ...product, quantity: 1 });
     }
+    this.cartChanged.next();
   }
 
-  // Remove product from cart
   removeFromCart(productId: number) {
     this.cart = this.cart.filter(p => p.id !== productId);
+    this.cartChanged.next();
   }
 
-  // Clear cart
   clearCart() {
     this.cart = [];
+    this.cartChanged.next();
   }
 
-  // Total items count
   getTotalItems() {
     return this.cart.reduce((sum, p) => sum + p.quantity, 0);
   }
 
-  // Total price
   getTotalPrice() {
     return this.cart.reduce((sum, p) => sum + p.price * p.quantity, 0);
   }
