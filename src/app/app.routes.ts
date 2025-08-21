@@ -45,16 +45,16 @@ export const routes: Routes = [
   },
 
   { 
-  path: 'cart', 
-  component: CartComponent,
-  canActivate: [authGuard],
-  data: { roles: ['Customer'] } 
+    path: 'order-confirmation', 
+    component: OrderConfirmationComponent, 
+    canActivate: [authGuard],
+    data: { roles: ['Customer'] } 
   },
   { 
-    path: 'order-confirmation', 
-    component: OrderConfirmationComponent,
+    path: 'cart', 
+    component: CartComponent,
     canActivate: [authGuard],
-    data: { roles: ['Customer'] }
+    data: { roles: ['Customer'] } 
   },
 
   // Auth pages

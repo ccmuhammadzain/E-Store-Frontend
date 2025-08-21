@@ -79,9 +79,13 @@ export class BillsComponent implements OnInit {
   }
 
   payBill(bill: BillDto) {
-  if (bill.status !== 'Pending') return;
-  this.showPayFormFor = bill.id;
-  this.payModel = { customerName: '', addressLine1: '', city: '', country: '', phone: '' };
+    // Debug log actual status value coming from backend
+    console.log('Pay clicked. Raw status value:', bill.status);
+    if (!this.isPending(bill)) {
+      return;
+    }
+    this.showPayFormFor = bill.id;
+    this.payModel = { customerName: '', addressLine1: '', city: '', country: '', phone: '' };
   }
 
   deleteBill(bill: BillDto) {
@@ -109,5 +113,29 @@ export class BillsComponent implements OnInit {
         this.lastErrorCode = err?.error?.code;
       }
     });
+  }
+
+  // ----- STATUS HELPERS (handle numeric enum serialization or string) -----
+  private normalizeStatus(status: any): string {
+    if (status === 0 || status === '0') return 'Pending';
+    if (status === 1 || status === '1') return 'Paid';
+    if (status === 2 || status === '2') return 'Canceled';
+    if (typeof status === 'string') {
+      const s = status.toLowerCase();
+      if (s === 'pending') return 'Pending';
+      if (s === 'paid') return 'Paid';
+      if (s === 'canceled' || s === 'cancelled') return 'Canceled';
+    }
+    return 'Pending';
+  }
+
+  isPending(bill: BillDto): boolean {
+    return this.normalizeStatus(bill.status) === 'Pending';
+  }
+  isPaid(bill: BillDto): boolean {
+    return this.normalizeStatus(bill.status) === 'Paid';
+  }
+  isCanceled(bill: BillDto): boolean {
+    return this.normalizeStatus(bill.status) === 'Canceled';
   }
 }
