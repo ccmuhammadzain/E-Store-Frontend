@@ -20,10 +20,10 @@
         </div>
         <span class="px-2 py-0.5 rounded text-xs font-medium"
           [ngClass]="{
-            'bg-yellow-100 text-yellow-800': bill.status === 'Pending',
-            'bg-green-100 text-green-800': bill.status === 'Paid',
-            'bg-red-100 text-red-800': bill.status === 'Canceled'
-          }">{{ bill.status }}</span>
+            'bg-yellow-100 text-yellow-800': isPending(bill),
+            'bg-green-100 text-green-800': isPaid(bill),
+            'bg-red-100 text-red-800': isCanceled(bill)
+          }">{{ isPending(bill) ? 'Pending' : isPaid(bill) ? 'Paid' : isCanceled(bill) ? 'Canceled' : bill.status }}</span>
       </div>
       <p class="text-sm font-medium">Total: <span class="font-semibold">{{ bill.totalAmount | number:'1.0-0' }}</span></p>
       <div class="border rounded">
@@ -44,13 +44,31 @@
           </tbody>
         </table>
       </div>
-      <div class="flex gap-2 pt-1">
-        <button (click)="payBill(bill)" [disabled]="bill.status !== 'Pending'" class="px-2 py-1 text-xs rounded bg-green-600 disabled:opacity-40 disabled:cursor-not-allowed text-white hover:bg-green-700">
-          Pay
-        </button>
-        <button (click)="deleteBill(bill)" [disabled]="bill.status === 'Paid'" class="px-2 py-1 text-xs rounded bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed text-white hover:bg-red-700">
-          Delete
-        </button>
+      <div class="flex flex-col gap-2 pt-1">
+  <div class="flex gap-2" *ngIf="isPending(bill) && showPayFormFor !== bill.id">
+          <button (click)="payBill(bill)" class="px-2 py-1 text-xs rounded bg-green-600 text-white hover:bg-green-700">
+            Pay
+          </button>
+          <button (click)="deleteBill(bill)" class="px-2 py-1 text-xs rounded bg-red-600 text-white hover:bg-red-700">
+            Cancel
+          </button>
+        </div>
+        <form *ngIf="showPayFormFor === bill.id" class="space-y-2 text-xs bg-gray-50 p-2 rounded" (ngSubmit)="submitPayment(bill)">
+          <div class="grid grid-cols-2 gap-2">
+            <input class="border rounded px-2 py-1" placeholder="Customer Name" [(ngModel)]="payModel.customerName" name="customerName" required />
+            <input class="border rounded px-2 py-1" placeholder="Phone" [(ngModel)]="payModel.phone" name="phone" required />
+            <input class="border rounded px-2 py-1 col-span-2" placeholder="Address Line 1" [(ngModel)]="payModel.addressLine1" name="addressLine1" required />
+            <input class="border rounded px-2 py-1" placeholder="City" [(ngModel)]="payModel.city" name="city" required />
+            <input class="border rounded px-2 py-1" placeholder="Country" [(ngModel)]="payModel.country" name="country" required />
+            <input class="border rounded px-2 py-1 col-span-2" placeholder="Payment Ref (optional)" [(ngModel)]="payModel.paymentReference" name="paymentReference" />
+          </div>
+          <div class="flex gap-2">
+            <button type="submit" class="px-2 py-1 rounded bg-green-600 text-white">Confirm Pay</button>
+            <button type="button" (click)="showPayFormFor=undefined" class="px-2 py-1 rounded bg-gray-300">Close</button>
+          </div>
+        </form>
+  <div *ngIf="isPaid(bill)" class="text-xs text-green-700">Paid {{ bill.paidAt | date:'short' }} Ref: {{ bill.paymentReference }}</div>
+  <div *ngIf="isCanceled(bill)" class="text-xs text-red-600">Canceled</div>
       </div>
     </div>
   </div>
