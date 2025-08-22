@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private apiUrl = 'https://localhost:7188/api/Auth'; 
+  private userSubject = new BehaviorSubject<any>(this.getUser());
+  user$ = this.userSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -33,7 +35,18 @@ export class AuthService {
   }
 
   saveUser(user: any) {
+    // Attempt to ensure username property exists (backend might return different casing or omit)
+    if (!user?.username) {
+      const token = this.getToken();
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          user.username = payload['unique_name'] || payload['name'] || payload['sub'] || user.id || 'User';
+        } catch {}
+      }
+    }
     localStorage.setItem('user', JSON.stringify(user));
+    this.userSubject.next(user);
   }
 
   getUser() {
@@ -53,5 +66,6 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+  this.userSubject.next(null);
   }
 }

@@ -8,9 +8,18 @@ export class CartService {
   private cart: any[] = [];
   cartChanged = new Subject<void>(); // 🔔 notify on cart updates
 
-  getCart() {
-    return this.cart;
+  constructor() {
+    const stored = localStorage.getItem('cart');
+    if (stored) {
+      try { this.cart = JSON.parse(stored); } catch { this.cart = []; }
+    }
   }
+
+  private persist() {
+    localStorage.setItem('cart', JSON.stringify(this.cart));
+  }
+
+  getCart() { return this.cart; }
 
   addToCart(product: any) {
     const existing = this.cart.find(p => p.id === product.id);
@@ -19,17 +28,20 @@ export class CartService {
     } else {
       this.cart.push({ ...product, quantity: 1 });
     }
-    this.cartChanged.next();
+  this.persist();
+  this.cartChanged.next();
   }
 
   removeFromCart(productId: number) {
     this.cart = this.cart.filter(p => p.id !== productId);
-    this.cartChanged.next();
+  this.persist();
+  this.cartChanged.next();
   }
 
   clearCart() {
     this.cart = [];
-    this.cartChanged.next();
+  this.persist();
+  this.cartChanged.next();
   }
 
   getTotalItems() {

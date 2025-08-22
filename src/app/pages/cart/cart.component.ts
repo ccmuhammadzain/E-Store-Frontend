@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CartService } from '../../core/services/cart.service';
 import { CommonModule } from '@angular/common';
 import { BillService, BillCreateDto } from '../../core/services/bill.service';
+import { ToastService } from '../../core/services/toast.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -20,7 +21,8 @@ export class CartComponent implements OnInit {
   constructor(
     private cartService: CartService,
     private billService: BillService,
-    private authService: AuthService,
+  private authService: AuthService,
+  private toast: ToastService,
     private router: Router
   ) {}
 
@@ -45,13 +47,16 @@ export class CartComponent implements OnInit {
   }
 
   removeFromCart(id: number) {
+    const item = this.cart.find(p => p.id === id);
     this.cartService.removeFromCart(id);
     this.loadCart();
+    if (item) this.toast.info(`${item.title} removed`);
   }
 
   clearCart() {
     this.cartService.clearCart();
     this.loadCart();
+    this.toast.warning('Cart cleared');
   }
 
   getTotalItems() {
@@ -92,8 +97,9 @@ export class CartComponent implements OnInit {
     this.billService.createBill(payload).subscribe({
       next: bill => {
         console.log('Bill created response', bill);
-        this.cartService.clearCart();
+  this.cartService.clearCart();
         this.router.navigate(['/bills'], { state: { newBillId: bill.id, createdBill: bill } });
+  this.toast.success('Order placed');
       },
       error: err => {
         console.error('Checkout error', err);

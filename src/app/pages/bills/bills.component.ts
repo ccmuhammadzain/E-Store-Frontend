@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgClass, DecimalPipe } from '@angular/common';
 import { BillService, BillCreateDto, BillDto, BillPaymentDto } from '../../core/services/bill.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-bills',
@@ -20,10 +21,12 @@ export class BillsComponent implements OnInit {
   lastErrorCode?: string;
   showPayFormFor?: number;
   payModel: Partial<BillPaymentDto> = {};
+  currentUser: any;
 
-  constructor(private billService: BillService, private router: Router) {}
+  constructor(private billService: BillService, private router: Router, private authService: AuthService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
+    this.currentUser = this.authService.getUser();
     const navState: any = history.state;
     if (navState) {
       if (navState.newBillId) this.newBillId = navState.newBillId;
@@ -42,7 +45,8 @@ export class BillsComponent implements OnInit {
     this.error = null;
     this.billService.getBills().subscribe({
       next: (data) => {
-        this.bills = data;
+        this.bills = this.filterForUser(data);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error(err);
@@ -53,6 +57,14 @@ export class BillsComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  private filterForUser(all: BillDto[]): BillDto[] {
+    // Only narrow for customers. Admin & other roles see full list (admin still needs server-enforced auth!)
+    if (this.currentUser?.role === 'Customer' && this.currentUser?.id != null) {
+      return all.filter(b => b.userId === this.currentUser.id);
+    }
+    return all;
   }
 
   // Retry logic removed: server now returns hydrated bill in create response and list fetch is immediate.
@@ -115,7 +127,7 @@ export class BillsComponent implements OnInit {
     });
   }
 
-  // ----- STATUS HELPERS (handle numeric enum serialization or string) -----
+
   private normalizeStatus(status: any): string {
     if (status === 0 || status === '0') return 'Pending';
     if (status === 1 || status === '1') return 'Paid';
