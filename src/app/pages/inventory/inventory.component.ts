@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.css'],
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule],
 })
 export class InventoryComponent implements OnInit {
   products: any[] = [];
@@ -21,22 +21,22 @@ export class InventoryComponent implements OnInit {
 
   constructor(
     private inventoryService: InventoryService,
-  private authService: AuthService,
-  private cartService: CartService
+    private authService: AuthService,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
     this.user = this.authService.getUser(); // ✅ Get logged-in user
     this.getProducts();
 
-  // Nothing to load; service keeps state
+    // Nothing to load; service keeps state
   }
 
   // ✅ Load all products
   getProducts(): void {
     this.inventoryService.getInventory().subscribe({
       next: (data) => (this.products = data),
-      error: (err) => console.error('Error fetching products:', err)
+      error: (err) => console.error('Error fetching products:', err),
     });
   }
 
@@ -51,7 +51,7 @@ export class InventoryComponent implements OnInit {
       brand: '',
       price: 0,
       stock: 0,
-      productImage: ''
+      productImage: '',
     };
     this.isEdit = false;
     this.showForm = true;
@@ -76,7 +76,7 @@ export class InventoryComponent implements OnInit {
           this.getProducts();
           this.showForm = false;
         },
-        error: (err) => console.error('Error updating product:', err)
+        error: (err) => console.error('Error updating product:', err),
       });
     } else {
       this.inventoryService.addProduct(this.currentProduct).subscribe({
@@ -84,7 +84,7 @@ export class InventoryComponent implements OnInit {
           this.getProducts();
           this.showForm = false;
         },
-        error: (err) => console.error('Error saving product:', err)
+        error: (err) => console.error('Error saving product:', err),
       });
     }
   }
@@ -95,7 +95,7 @@ export class InventoryComponent implements OnInit {
 
     this.inventoryService.deleteProduct(id).subscribe({
       next: () => this.getProducts(),
-      error: (err) => console.error('Error deleting product:', err)
+      error: (err) => console.error('Error deleting product:', err),
     });
   }
 

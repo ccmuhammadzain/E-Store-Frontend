@@ -23,23 +23,32 @@
           </td>
           <td class="p-2">${{ p.price * p.quantity }}</td>
           <td class="p-2">
-            <button class="text-red-500 hover:underline" (click)="removeFromCart(p.id)">Remove</button>
+            <button class="text-red-500 hover:underline" (click)="removeFromCart(p.id)">
+              Remove
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
 
     <!-- Summary -->
-    <div class="mt-6 flex justify-between items-center">
+    <div class="mt-6 gap-2 my-6 justify-between items-center">
       <p class="text-lg font-semibold">
-        Total ({{ getTotalItems() }} items): 
+        Total ({{ getTotalItems() }} items):
         <span class="text-green-600">${{ getTotalPrice() }}</span>
       </p>
-      <div class="space-x-3">
-        <button class="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded" (click)="clearCart()">
+      <div class="space-x-3 flex">
+        <button
+          class="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded"
+          (click)="clearCart()"
+        >
           Clear Cart
         </button>
-        <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded disabled:opacity-40 disabled:cursor-not-allowed" (click)="checkout()" [disabled]="loading">
+        <button
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded disabled:opacity-40 disabled:cursor-not-allowed"
+          (click)="checkout()"
+          [disabled]="loading"
+        >
           <span *ngIf="!loading">Checkout</span>
           <span *ngIf="loading">Processing...</span>
         </button>

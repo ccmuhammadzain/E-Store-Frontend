@@ -1,120 +1,231 @@
 <nav class="bg-gray-800 text-white px-4 py-3">
-  <div class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto">
+  <div class="max-w-screen-xl mx-auto flex items-center justify-between">
+    <!-- Left: Logo & Mobile Toggle -->
+    <div class="flex items-center gap-3">
+      <button
+        (click)="isMenuOpen = !isMenuOpen"
+        class="md:hidden inline-flex items-center p-2 text-gray-300 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600"
+        aria-label="Toggle navigation"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      <a routerLink="/home" class="flex items-center gap-2 text-lg font-bold">
+        <img src="assets/fial-logo.png" alt="ElectroCart Logo" class="h-8 w-8 object-contain" />
+        <span>ElectroCart</span>
+      </a>
+    </div>
 
-    <!-- Logo -->
-    <a routerLink="/home" class="flex items-center gap-2 text-lg font-bold">
-      <img src="assets/fial-logo.png" alt="E-Store Logo" class="h-8 w-8 object-contain select-none" />
-      <span>E-Store</span>
-    </a>
+    <!-- Center (desktop): Navigation -->
+    <ul class="hidden md:flex items-center gap-8">
+      <li>
+        <a
+          routerLink="/home"
+          routerLinkActive="text-yellow-400"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="hover:text-yellow-300"
+          >Home</a
+        >
+      </li>
+      <li *ngIf="isAdmin()">
+        <a routerLink="/inventory" routerLinkActive="text-yellow-400" class="hover:text-yellow-300"
+          >Inventory</a
+        >
+      </li>
+      <li *ngIf="isCustomer()">
+        <a routerLink="/shop" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">Shop</a>
+      </li>
+      <li *ngIf="user">
+        <a routerLink="/bills" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">Bills</a>
+      </li>
+      <li *ngIf="isCustomer()">
+        <a
+          routerLink="/cart"
+          routerLinkActive="text-yellow-400"
+          class="hover:text-yellow-300 flex items-center gap-1"
+        >
+          🛒 Cart
+          <span
+            *ngIf="cartItemCount > 0"
+            class="bg-yellow-500 text-white text-xs font-bold px-2 py-0.5 rounded-full"
+            >{{ cartItemCount }}</span
+          >
+        </a>
+      </li>
+      <li *ngIf="isAdmin()">
+        <a routerLink="/customers" routerLinkActive="text-yellow-400" class="hover:text-yellow-300"
+          >Customers</a
+        >
+      </li>
+    </ul>
 
-    <!-- Mobile Menu Toggle -->
-    <button 
-      (click)="isMenuOpen = !isMenuOpen"
-      class="inline-flex items-center p-2 text-gray-400 rounded-lg md:hidden hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600"
-      type="button" 
-      aria-label="Toggle navigation"
-    >
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
-      </svg>
-    </button>
-
-    <!-- Nav Items -->
-    <div [ngClass]="{'hidden': !isMenuOpen}" class="w-full md:flex md:items-center md:w-auto">
-      <ul class="flex flex-col mt-3 space-y-2 md:space-y-0 md:flex-row md:space-x-6 md:mt-0">
-        <li>
-          <a routerLink="/home" routerLinkActive="text-yellow-400" [routerLinkActiveOptions]="{ exact: true }" class="hover:text-yellow-300">
-            Home
-          </a>
-        </li>
-
-        <!-- Admin sees Inventory -->
-        <li *ngIf="user?.role === 'Admin'">
-          <a routerLink="/inventory" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">
-            Inventory
-          </a>
-        </li>
-
-        <!-- Customer sees Shop -->
-        <li *ngIf="user?.role === 'Customer'">
-          <a routerLink="/shop" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">
-            Shop
-          </a>
-        </li>
-
-        <!-- Bills for both -->
-        <li *ngIf="user">
-          <a routerLink="/bills" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">
-            Bills
-          </a>
-        </li>
-
-        <!-- Cart for Customers -->
-        <li *ngIf="user?.role === 'Customer'">
-          <a routerLink="/cart" routerLinkActive="text-yellow-400" class="hover:text-yellow-300 flex items-center gap-1">
-            🛒 Cart
-            <span *ngIf="cartItemCount > 0" class="bg-yellow-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-              {{ cartItemCount }}
-            </span>
-          </a>
-        </li>
-
-        <!-- Customers only for Admin -->
-        <li *ngIf="user?.role === 'Admin'">
-          <a routerLink="/customers" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">
-            Customers
-          </a>
-        </li>
-      </ul>
-
-      <!-- Search -->
-      <form class="flex items-center mt-3 md:mt-0 md:ml-6" role="search" (submit)="onSearch($event)">
-        <input 
-          type="search" 
-          placeholder="Search products..." 
-          aria-label="Search" 
+    <!-- Right: Search (desktop) + Auth -->
+    <div class="hidden md:flex items-center gap-4">
+      <form class="flex items-center" (submit)="onSearch($event)">
+        <input
+          type="search"
+          placeholder="Search..."
           [(ngModel)]="searchTerm"
           name="globalSearch"
-          class="px-3 py-1 rounded-l-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black"
+          class="px-3 py-1 rounded-l border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black"
         />
-        <button 
-          type="submit" 
-          class="px-4 py-1 bg-yellow-500 hover:bg-yellow-600 text-white"
-          [class.rounded-r-md]="!searchTerm"
+        <button
+          type="submit"
+          class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white"
+          [class.rounded-r]="!searchTerm"
         >
           Go
         </button>
-        <button *ngIf="searchTerm" type="button" (click)="searchTerm=''; onSearch($event)" class="px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded-r-md">✕</button>
+        <button
+          *ngIf="searchTerm"
+          type="button"
+          (click)="searchTerm=''; onSearch($event)"
+          class="px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded-r"
+        >
+          ✕
+        </button>
       </form>
-    </div>
-
-    <!-- 🔑 Auth Links -->
-    <div class="flex items-center mt-3 md:mt-0 md:ml-6 space-x-4">
-      <!-- Login/Signup if not logged in -->
-      <ng-container *ngIf="!isLoggedIn">
-        <a 
-          routerLink="/login" 
-          class="px-4 py-1.5 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white font-medium shadow">
-          Login
-        </a>
-        <a 
-          routerLink="/signup" 
-          class="px-4 py-1.5 rounded-lg border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-white font-medium shadow">
-          Signup
-        </a>
+      <ng-container *ngIf="!isLoggedIn; else loggedInBlock">
+        <a
+          routerLink="/login"
+          class="px-4 py-1.5 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium shadow"
+          >Login</a
+        >
+        <a
+          routerLink="/signup"
+          class="px-4 py-1.5 rounded border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-white font-medium shadow"
+          >Signup</a
+        >
       </ng-container>
-
-      <!-- Logout if logged in -->
-      <ng-container *ngIf="isLoggedIn">
-        <span class="text-gray-300">Hi, {{ user?.username }}</span>
-        <button 
-          (click)="logout()" 
-          class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium shadow">
+      <ng-template #loggedInBlock>
+        <span class="text-gray-300">{{ user?.username }}</span>
+        <button
+          (click)="logout()"
+          class="px-4 py-1.5 rounded bg-red-600 hover:bg-red-700 text-white font-medium shadow"
+        >
           Logout
         </button>
-      </ng-container>
+      </ng-template>
     </div>
 
+    <!-- Mobile auth summary (right minimal) -->
+    <div class="md:hidden flex items-center gap-2">
+      <span *ngIf="isLoggedIn" class="text-sm text-gray-300 max-w-[90px] truncate"
+        >{{ user?.username }}</span
+      >
+    </div>
+  </div>
+
+  <!-- Mobile Expanded Panel -->
+  <div *ngIf="isMenuOpen" class="md:hidden mt-3 space-y-4 border-t border-gray-700 pt-4">
+    <ul class="flex flex-col gap-3">
+      <li>
+        <a
+          routerLink="/home"
+          routerLinkActive="text-yellow-400"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="hover:text-yellow-300"
+          (click)="isMenuOpen=false"
+          >Home</a
+        >
+      </li>
+      <li *ngIf="isAdmin()">
+        <a
+          routerLink="/inventory"
+          routerLinkActive="text-yellow-400"
+          class="hover:text-yellow-300"
+          (click)="isMenuOpen=false"
+          >Inventory</a
+        >
+      </li>
+      <li *ngIf="isCustomer()">
+        <a
+          routerLink="/shop"
+          routerLinkActive="text-yellow-400"
+          class="hover:text-yellow-300"
+          (click)="isMenuOpen=false"
+          >Shop</a
+        >
+      </li>
+      <li *ngIf="isCustomer()">
+        <a
+          routerLink="/bills"
+          routerLinkActive="text-yellow-400"
+          class="hover:text-yellow-300"
+          (click)="isMenuOpen=false"
+          >Bills</a
+        >
+      </li>
+      <li *ngIf="isCustomer()">
+        <a
+          routerLink="/cart"
+          routerLinkActive="text-yellow-400"
+          class="hover:text-yellow-300 flex items-center gap-1"
+          (click)="isMenuOpen=false"
+        >
+          🛒 Cart
+          <span
+            *ngIf="cartItemCount > 0"
+            class="bg-yellow-500 text-white text-xs font-bold px-2 py-0.5 rounded-full"
+            >{{ cartItemCount }}</span
+          >
+        </a>
+      </li>
+      <li *ngIf="isAdmin()">
+        <a
+          routerLink="/customers"
+          routerLinkActive="text-yellow-400"
+          class="hover:text-yellow-300"
+          (click)="isMenuOpen=false"
+          >Customers</a
+        >
+      </li>
+    </ul>
+    <form class="flex items-center" (submit)="onSearch($event)">
+      <input
+        type="search"
+        placeholder="Search products..."
+        [(ngModel)]="searchTerm"
+        name="globalSearch"
+        class="flex-1 px-3 py-2 rounded-l border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black"
+      />
+      <button type="submit" class="px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white" [class.rounded-r]="!searchTerm">
+        Go
+      </button>
+      <button
+        *ngIf="searchTerm"
+        type="button"
+        (click)="searchTerm=''; onSearch($event)"
+        class="px-3 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-r"
+      >
+        ✕
+      </button>
+    </form>
+    <div class="flex items-center gap-3 pt-2 border-t border-gray-700">
+      <ng-container *ngIf="!isLoggedIn; else mobLoggedIn">
+        <a
+          routerLink="/login"
+          class="flex-1 text-center px-4 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+          (click)="isMenuOpen=false"
+          >Login</a
+        >
+        <a
+          routerLink="/signup"
+          class="flex-1 text-center px-4 py-2 rounded border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-white font-medium"
+          (click)="isMenuOpen=false"
+          >Signup</a
+        >
+      </ng-container>
+      <ng-template #mobLoggedIn>
+        <button
+          (click)="logout(); isMenuOpen=false"
+          class="w-full px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white font-medium"
+        >
+          Logout
+        </button>
+      </ng-template>
+    </div>
   </div>
 </nav>
 

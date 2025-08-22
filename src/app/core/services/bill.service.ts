@@ -55,7 +55,7 @@ export interface BillPaymentDto {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BillService {
   private apiUrl = `${environment.apiBaseUrl}/api/Bills`;

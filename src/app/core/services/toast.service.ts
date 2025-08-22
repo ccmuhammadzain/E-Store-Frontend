@@ -24,13 +24,21 @@ export class ToastService {
     }
   }
 
-  success(text: string, timeout?: number) { this.show(text, 'success', timeout ?? 2500); }
-  error(text: string, timeout?: number) { this.show(text, 'error', timeout ?? 4000); }
-  info(text: string, timeout?: number) { this.show(text, 'info', timeout ?? 2500); }
-  warning(text: string, timeout?: number) { this.show(text, 'warning', timeout ?? 3000); }
+  success(text: string, timeout?: number) {
+    this.show(text, 'success', timeout ?? 2500);
+  }
+  error(text: string, timeout?: number) {
+    this.show(text, 'error', timeout ?? 4000);
+  }
+  info(text: string, timeout?: number) {
+    this.show(text, 'info', timeout ?? 2500);
+  }
+  warning(text: string, timeout?: number) {
+    this.show(text, 'warning', timeout ?? 3000);
+  }
 
   dismiss(id: number) {
-    this.messages = this.messages.filter(m => m.id !== id);
+    this.messages = this.messages.filter((m) => m.id !== id);
     this.subject.next([...this.messages]);
   }
 

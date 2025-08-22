@@ -1,7 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgClass, DecimalPipe } from '@angular/common';
-import { BillService, BillCreateDto, BillDto, BillPaymentDto } from '../../core/services/bill.service';
+import {
+  BillService,
+  BillCreateDto,
+  BillDto,
+  BillPaymentDto,
+} from '../../core/services/bill.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -11,7 +16,7 @@ import { AuthService } from '../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, NgClass, DecimalPipe, FormsModule],
   templateUrl: './bills.component.html',
-  styleUrls: ['./bills.component.css']
+  styleUrls: ['./bills.component.css'],
 })
 export class BillsComponent implements OnInit {
   bills: BillDto[] = [];
@@ -23,7 +28,12 @@ export class BillsComponent implements OnInit {
   payModel: Partial<BillPaymentDto> = {};
   currentUser: any;
 
-  constructor(private billService: BillService, private router: Router, private authService: AuthService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private billService: BillService,
+    private router: Router,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.currentUser = this.authService.getUser();
@@ -32,7 +42,7 @@ export class BillsComponent implements OnInit {
       if (navState.newBillId) this.newBillId = navState.newBillId;
       if (navState.createdBill) {
         const incoming: BillDto = navState.createdBill;
-        if (!this.bills.some(b => b.id === incoming.id)) {
+        if (!this.bills.some((b) => b.id === incoming.id)) {
           this.bills.unshift(incoming);
         }
       }
@@ -50,45 +60,24 @@ export class BillsComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-    this.error = err?.error?.error || 'Failed to load bills';
-    this.lastErrorCode = err?.error?.code;
+        this.error = err?.error?.error || 'Failed to load bills';
+        this.lastErrorCode = err?.error?.code;
       },
       complete: () => {
         this.loading = false;
-      }
+      },
     });
   }
 
   private filterForUser(all: BillDto[]): BillDto[] {
     // Only narrow for customers. Admin & other roles see full list (admin still needs server-enforced auth!)
     if (this.currentUser?.role === 'Customer' && this.currentUser?.id != null) {
-      return all.filter(b => b.userId === this.currentUser.id);
+      return all.filter((b) => b.userId === this.currentUser.id);
     }
     return all;
   }
 
   // Retry logic removed: server now returns hydrated bill in create response and list fetch is immediate.
-
-  createSampleBill() {
-    const newBill: BillCreateDto = {
-      billItems: [
-        { productId: 12, quantity: 2 },
-        { productId: 13, quantity: 1 }
-      ]
-    };
-
-    this.billService.createBill(newBill).subscribe({
-      next: (bill) => {
-        // Prepend freshly created bill without reloading entire list
-        this.bills = [bill, ...this.bills];
-      },
-      error: (err) => {
-        console.error(err);
-        this.error = err?.error?.error || 'Failed to create bill';
-        this.lastErrorCode = err?.error?.code;
-      }
-    });
-  }
 
   payBill(bill: BillDto) {
     // Debug log actual status value coming from backend
@@ -104,29 +93,36 @@ export class BillsComponent implements OnInit {
     if (bill.status === 'Paid') return; // business rule example
     this.billService.deleteBill(bill.id).subscribe({
       next: () => this.loadBills(),
-      error: (err) => console.error(err)
+      error: (err) => console.error(err),
     });
   }
 
   submitPayment(bill: BillDto) {
-    if (!this.payModel.customerName || !this.payModel.addressLine1 || !this.payModel.city || !this.payModel.country || !this.payModel.phone) {
+    if (
+      !this.payModel.customerName ||
+      !this.payModel.addressLine1 ||
+      !this.payModel.city ||
+      !this.payModel.country ||
+      !this.payModel.phone
+    ) {
       this.error = 'All payment fields required';
       return;
     }
     this.billService.payBillWithDetails(bill.id, this.payModel as BillPaymentDto).subscribe({
-      next: updated => {
-        this.bills = this.bills.map(b => b.id === updated.id ? updated : b);
+      next: (updated) => {
+        this.bills = this.bills.map((b) => (b.id === updated.id ? updated : b));
         this.showPayFormFor = undefined;
-        this.router.navigate(['/order-confirmation'], { state: { billId: updated.id, paymentReference: updated.paymentReference } });
+        this.router.navigate(['/order-confirmation'], {
+          state: { billId: updated.id, paymentReference: updated.paymentReference },
+        });
       },
-      error: err => {
+      error: (err) => {
         console.error(err);
         this.error = err?.error?.error || 'Payment failed';
         this.lastErrorCode = err?.error?.code;
-      }
+      },
     });
   }
-
 
   private normalizeStatus(status: any): string {
     if (status === 0 || status === '0') return 'Pending';

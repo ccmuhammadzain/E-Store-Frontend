@@ -8,9 +8,8 @@ import { FooterComponent } from './components/footer/footer.component';
   standalone: true,
   imports: [RouterOutlet, NavbarComponent, FooterComponent],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'E-Store';
-
+  title = 'ElectroCart';
 }

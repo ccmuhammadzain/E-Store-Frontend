@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-shop',
   templateUrl: './shop.component.html',
   styleUrls: ['./shop.component.css'],
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule],
 })
 export class ShopComponent implements OnInit {
   products: any[] = [];
@@ -21,8 +21,8 @@ export class ShopComponent implements OnInit {
 
   constructor(
     private inventoryService: InventoryService,
-  private cartService: CartService,  // ✅ Inject CartService
-  private toast: ToastService,
+    private cartService: CartService, // ✅ Inject CartService
+    private toast: ToastService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -40,20 +40,20 @@ export class ShopComponent implements OnInit {
         }
         this.applyFilters();
         // subscribe to query param changes (if user searches again)
-        this.route.queryParamMap.subscribe(map => {
+        this.route.queryParamMap.subscribe((map) => {
           const term = map.get('q') || '';
-            if (term !== this.searchTerm) {
-              this.searchTerm = term;
-              this.applyFilters();
-            }
+          if (term !== this.searchTerm) {
+            this.searchTerm = term;
+            this.applyFilters();
+          }
         });
       },
-      error: (err) => console.error(err)
+      error: (err) => console.error(err),
     });
   }
 
   extractCategories() {
-    const cats = this.products.map(p => p.category);
+    const cats = this.products.map((p) => p.category);
     this.categories = Array.from(new Set(cats)); // unique categories
   }
 
@@ -75,8 +75,9 @@ export class ShopComponent implements OnInit {
 
   private applyFilters() {
     const term = this.searchTerm.trim().toLowerCase();
-    this.filteredProducts = this.products.filter(p => {
-      const matchesCategory = this.selectedCategory === 'All' || p.category === this.selectedCategory;
+    this.filteredProducts = this.products.filter((p) => {
+      const matchesCategory =
+        this.selectedCategory === 'All' || p.category === this.selectedCategory;
       if (!matchesCategory) return false;
       if (!term) return true;
       const haystack = `${p.title || ''} ${p.category || ''} ${p.brand || ''}`.toLowerCase();
