@@ -46,6 +46,9 @@ export class NavbarComponent implements OnInit {
   get user() { return this.currentUser; }
   get isLoggedIn(): boolean { return !!this.currentUser; }
 
+  isAdmin(): boolean { return (this.currentUser?.role || '').toLowerCase() === 'admin'; }
+  isCustomer(): boolean { return (this.currentUser?.role || '').toLowerCase() === 'customer'; }
+
   onSearch(evt: Event) {
     evt.preventDefault();
     const term = this.searchTerm.trim();

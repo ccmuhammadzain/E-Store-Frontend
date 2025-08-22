@@ -23,7 +23,7 @@ import { Subscription } from 'rxjs';
   `,
   styles: [`
     :host { position: fixed; top:0; left:0; }
-    .animate-fadeIn { animation: fadeIn .25s ease; }
+    .animate-fadeIn { animation: fadeIn .2s ease; }
     @keyframes fadeIn { from { opacity:0; transform: translateY(-4px);} to { opacity:1; transform: translateY(0);} }
   `]
 })

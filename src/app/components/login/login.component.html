@@ -1,31 +1,49 @@
-<div class="flex items-center justify-center min-h-screen bg-gray-100">
-  <div class="p-6 max-w-md w-full bg-white rounded-xl shadow-md">
-    <h2 class="text-xl font-bold mb-4 text-gray-800">Login</h2>
-    
-    <form (ngSubmit)="onLogin()">
-      <input 
-        [(ngModel)]="user.username" 
-        name="username" 
-        placeholder="Username" 
-        class="border border-gray-300 p-2 w-full mb-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
-      />
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-yellow-50 px-4 py-10">
+  <div class="w-full max-w-5xl grid md:grid-cols-2 gap-0 bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+    <!-- Left / Brand -->
+    <div class="hidden md:flex flex-col justify-center p-10 bg-gradient-to-br from-yellow-500 to-yellow-600 text-white relative">
+      <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+      <div class="relative">
+        <h1 class="text-4xl font-extrabold tracking-tight drop-shadow-sm">E-Store</h1>
+        <p class="mt-4 text-yellow-50 text-lg leading-relaxed">Welcome back! Access your personalized shopping dashboard and manage your orders seamlessly.</p>
+        <ul class="mt-6 space-y-2 text-sm text-yellow-100">
+          <li class="flex items-center gap-2"><span class="text-white">✔</span> Fast & secure checkout</li>
+          <li class="flex items-center gap-2"><span class="text-white">✔</span> Track bills & payments</li>
+          <li class="flex items-center gap-2"><span class="text-white">✔</span> Exclusive deals for members</li>
+        </ul>
+      </div>
+    </div>
 
-      <input 
-        [(ngModel)]="user.passwordHash" 
-        name="password" 
-        type="password" 
-        placeholder="Password" 
-        class="border border-gray-300 p-2 w-full mb-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
-      />
-
-      <button 
-        type="submit" 
-        class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition"
-      >
-        Login
-      </button>
-    </form>
-
-    <p class="mt-3 text-red-500 text-center">{{message}}</p>
+    <!-- Right / Form -->
+    <div class="p-8 md:p-12 flex flex-col justify-center bg-white">
+      <div class="mb-8">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Sign in to your account</h2>
+        <p class="mt-2 text-sm text-gray-500">New here? <a routerLink="/signup" class="text-yellow-600 hover:underline font-medium">Create an account</a></p>
+      </div>
+      <form (ngSubmit)="onLogin()" class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+          <div class="relative">
+            <input [(ngModel)]="user.username" name="username" placeholder="johndoe" required
+              class="peer w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition" />
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 peer-focus:text-yellow-500">👤</span>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <div class="relative">
+            <input [(ngModel)]="user.passwordHash" name="password" type="password" placeholder="••••••••" required
+              class="peer w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition" />
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 peer-focus:text-yellow-500">🔒</span>
+          </div>
+        </div>
+        <button type="submit"
+          class="w-full inline-flex justify-center items-center gap-2 bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:ring-yellow-200 text-white font-semibold rounded-lg px-6 py-3 transition shadow">
+          <span>Login</span>
+        </button>
+      </form>
+      <p class="mt-4 text-center text-sm text-red-500 min-h-[1.25rem]">{{message}}</p>
+      <p class="mt-8 text-[11px] text-center text-gray-400">By continuing you agree to our Terms & Privacy Policy.</p>
+    </div>
   </div>
 </div>

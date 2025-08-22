@@ -69,26 +69,7 @@ export class BillsComponent implements OnInit {
 
   // Retry logic removed: server now returns hydrated bill in create response and list fetch is immediate.
 
-  createSampleBill() {
-    const newBill: BillCreateDto = {
-      billItems: [
-        { productId: 12, quantity: 2 },
-        { productId: 13, quantity: 1 }
-      ]
-    };
-
-    this.billService.createBill(newBill).subscribe({
-      next: (bill) => {
-        // Prepend freshly created bill without reloading entire list
-        this.bills = [bill, ...this.bills];
-      },
-      error: (err) => {
-        console.error(err);
-        this.error = err?.error?.error || 'Failed to create bill';
-        this.lastErrorCode = err?.error?.code;
-      }
-    });
-  }
+  
 
   payBill(bill: BillDto) {
     // Debug log actual status value coming from backend

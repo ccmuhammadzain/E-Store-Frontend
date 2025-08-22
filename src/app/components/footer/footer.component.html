@@ -14,9 +14,18 @@
       <h3 class="text-lg font-semibold mb-3">Quick Links</h3>
       <ul class="space-y-2">
         <li><a routerLink="/home" class="hover:text-yellow-400 transition-colors">Home</a></li>
-        <li><a routerLink="/inventory" class="hover:text-yellow-400 transition-colors">Inventory</a></li>
-        <li><a routerLink="/customers" class="hover:text-yellow-400 transition-colors">Customers</a></li>
-        <li><a routerLink="/bills" class="hover:text-yellow-400 transition-colors">Bills</a></li>
+  <ng-container *ngIf="isAdmin(); else customerLinks">
+          <li><a routerLink="/inventory" class="hover:text-yellow-400 transition-colors">Inventory</a></li>
+          <li><a routerLink="/customers" class="hover:text-yellow-400 transition-colors">Customers</a></li>
+          <li><a routerLink="/bills" class="hover:text-yellow-400 transition-colors">Bills</a></li>
+        </ng-container>
+        <ng-template #customerLinks>
+          <li *ngIf="isCustomer()"><a routerLink="/shop" class="hover:text-yellow-400 transition-colors">Shop</a></li>
+          <li *ngIf="isCustomer()"><a routerLink="/cart" class="hover:text-yellow-400 transition-colors">Cart</a></li>
+          <li *ngIf="isCustomer()"><a routerLink="/bills" class="hover:text-yellow-400 transition-colors">Bills</a></li>
+          <li *ngIf="!user"><a routerLink="/login" class="hover:text-yellow-400 transition-colors">Login</a></li>
+          <li *ngIf="!user"><a routerLink="/signup" class="hover:text-yellow-400 transition-colors">Signup</a></li>
+        </ng-template>
       </ul>
     </div>
 

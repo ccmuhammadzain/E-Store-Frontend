@@ -1,10 +1,10 @@
 <nav class="bg-gray-800 text-white px-4 py-3">
-  <div class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto">
+  <div class="flex flex-wrap items-center align-middle justify-between max-w-screen-xl mx-auto">
 
     <!-- Logo -->
     <a routerLink="/home" class="flex items-center gap-2 text-lg font-bold">
-      <img src="assets/fial-logo.png" alt="E-Store Logo" class="h-8 w-8 object-contain select-none" />
-      <span>E-Store</span>
+      <img src="assets/fial-logo.png" alt="ElectroCart Logo" class="h-8 w-8 object-contain select-none" />
+      <span>ElectroCart</span>
     </a>
 
     <!-- Mobile Menu Toggle -->
@@ -29,14 +29,14 @@
         </li>
 
         <!-- Admin sees Inventory -->
-        <li *ngIf="user?.role === 'Admin'">
+  <li *ngIf="isAdmin()">
           <a routerLink="/inventory" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">
             Inventory
           </a>
         </li>
 
         <!-- Customer sees Shop -->
-        <li *ngIf="user?.role === 'Customer'">
+  <li *ngIf="isCustomer()">
           <a routerLink="/shop" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">
             Shop
           </a>
@@ -50,7 +50,7 @@
         </li>
 
         <!-- Cart for Customers -->
-        <li *ngIf="user?.role === 'Customer'">
+  <li *ngIf="isCustomer()">
           <a routerLink="/cart" routerLinkActive="text-yellow-400" class="hover:text-yellow-300 flex items-center gap-1">
             🛒 Cart
             <span *ngIf="cartItemCount > 0" class="bg-yellow-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
@@ -60,7 +60,7 @@
         </li>
 
         <!-- Customers only for Admin -->
-        <li *ngIf="user?.role === 'Admin'">
+  <li *ngIf="isAdmin()">
           <a routerLink="/customers" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">
             Customers
           </a>

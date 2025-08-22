@@ -11,6 +11,6 @@ import { FooterComponent } from './components/footer/footer.component';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'E-Store';
+  title = 'ElectroCart';
 
 }
