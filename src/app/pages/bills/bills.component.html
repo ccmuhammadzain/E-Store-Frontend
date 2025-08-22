@@ -16,7 +16,7 @@
       <div class="flex items-start justify-between">
         <div>
           <p class="font-semibold">Bill #{{ bill.id }}</p>
-          <p class="text-xs text-gray-500">User: {{ bill.user?.username || bill.userId }}</p>
+          <p class="text-xs text-gray-500" *ngIf="currentUser?.role !== 'Customer'">User: {{ bill.user?.username || bill.userId }}</p>
         </div>
         <span class="px-2 py-0.5 rounded text-xs font-medium"
           [ngClass]="{

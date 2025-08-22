@@ -68,19 +68,23 @@
       </ul>
 
       <!-- Search -->
-      <form class="flex items-center mt-3 md:mt-0 md:ml-6" role="search">
+      <form class="flex items-center mt-3 md:mt-0 md:ml-6" role="search" (submit)="onSearch($event)">
         <input 
           type="search" 
-          placeholder="Search" 
+          placeholder="Search products..." 
           aria-label="Search" 
+          [(ngModel)]="searchTerm"
+          name="globalSearch"
           class="px-3 py-1 rounded-l-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black"
         />
         <button 
           type="submit" 
-          class="px-4 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-r-md"
+          class="px-4 py-1 bg-yellow-500 hover:bg-yellow-600 text-white"
+          [class.rounded-r-md]="!searchTerm"
         >
-          Search
+          Go
         </button>
+        <button *ngIf="searchTerm" type="button" (click)="searchTerm=''; onSearch($event)" class="px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded-r-md">✕</button>
       </form>
     </div>
 
@@ -113,3 +117,6 @@
 
   </div>
 </nav>
+
+<!-- Global Toasts -->
+<app-toast-container></app-toast-container>
