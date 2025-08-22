@@ -99,59 +99,120 @@
     </div>
   </div>
 
-  <!-- Table -->
-  <table class="w-full border-collapse bg-white shadow rounded-lg overflow-hidden mt-6">
-    <thead class="bg-gray-100">
-      <tr>
-        <th class="px-4 py-2 border-b text-left">#</th>
-        <th class="px-4 py-2 border-b text-left">Image</th>
-        <th class="px-4 py-2 border-b text-left">Product</th>
-        <th class="px-4 py-2 border-b text-left">Category</th>
-        <th class="px-4 py-2 border-b text-left">Brand</th>
-        <th class="px-4 py-2 border-b text-right">Price</th>
-        <th class="px-4 py-2 border-b text-right">Stock</th>
-        <th class="px-4 py-2 border-b text-center">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let p of products; let i = index" class="hover:bg-gray-50">
-        <td class="px-4 py-2 border-b">{{ i + 1 }}</td>
-        <td class="px-4 py-2 border-b">
-          <img [src]="p.productImage" alt="Product" class="w-12 h-12 object-cover rounded" />
-        </td>
-        <td class="px-4 py-2 border-b">{{ p.title }}</td>
-        <td class="px-4 py-2 border-b">{{ p.category }}</td>
-        <td class="px-4 py-2 border-b">{{ p.brand || '-' }}</td>
-        <td class="px-4 py-2 border-b text-right">{{ p.price }}</td>
-        <td class="px-4 py-2 border-b text-right">{{ p.stock }}</td>
-        <td class="px-4 py-2 border-b text-center">
-          <!-- Admin Actions -->
-          <ng-container *ngIf="user?.role === 'Admin'">
-            <button
-              class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-              (click)="openEditForm(p)"
-            >
-              Edit
-            </button>
-            <button
-              class="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 ml-2"
-              (click)="deleteProduct(p.id)"
-            >
-              Delete
-            </button>
-          </ng-container>
+  <!-- Desktop / Tablet Table -->
+  <div class="hidden md:block mt-6">
+    <div class="overflow-x-auto rounded-lg shadow">
+      <table class="w-full border-collapse bg-white">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-2 border-b text-left">#</th>
+            <th class="px-4 py-2 border-b text-left">Image</th>
+            <th class="px-4 py-2 border-b text-left">Product</th>
+            <th class="px-4 py-2 border-b text-left">Category</th>
+            <th class="px-4 py-2 border-b text-left">Brand</th>
+            <th class="px-4 py-2 border-b text-right">Price</th>
+            <th class="px-4 py-2 border-b text-right">Stock</th>
+            <th class="px-4 py-2 border-b text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of products; let i = index" class="hover:bg-gray-50">
+            <td class="px-4 py-2 border-b">{{ i + 1 }}</td>
+            <td class="px-4 py-2 border-b">
+              <img [src]="p.productImage" alt="Product" class="w-12 h-12 object-cover rounded" />
+            </td>
+            <td class="px-4 py-2 border-b">{{ p.title }}</td>
+            <td class="px-4 py-2 border-b">{{ p.category }}</td>
+            <td class="px-4 py-2 border-b">{{ p.brand || '-' }}</td>
+            <td class="px-4 py-2 border-b text-right">{{ p.price }}</td>
+            <td class="px-4 py-2 border-b text-right">{{ p.stock }}</td>
+            <td class="px-4 py-2 border-b text-center">
+              <!-- Admin Actions -->
+              <ng-container *ngIf="user?.role === 'Admin'">
+                <button
+                  class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+                  (click)="openEditForm(p)"
+                >
+                  Edit
+                </button>
+                <button
+                  class="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 ml-2"
+                  (click)="deleteProduct(p.id)"
+                >
+                  Delete
+                </button>
+              </ng-container>
 
-          <!-- Customer Actions -->
-          <ng-container *ngIf="user?.role === 'Customer'">
-            <button
-              class="px-3 py-1 bg-yellow-500 text-white rounded text-sm hover:bg-yellow-600"
-              (click)="addToCart(p)"
-            >
-              Add to Cart
-            </button>
-          </ng-container>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+              <!-- Customer Actions -->
+              <ng-container *ngIf="user?.role === 'Customer'">
+                <button
+                  class="px-3 py-1 bg-yellow-500 text-white rounded text-sm hover:bg-yellow-600"
+                  (click)="addToCart(p)"
+                >
+                  Add to Cart
+                </button>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Mobile Card Layout -->
+  <div class="md:hidden mt-6 space-y-4">
+    <div
+      *ngFor="let p of products; let i = index"
+      class="bg-white rounded-lg shadow p-4 flex flex-col gap-3"
+    >
+      <div class="flex items-center gap-3">
+        <div class="text-sm font-semibold text-gray-500">#{{ i + 1 }}</div>
+        <div class="flex-1 font-bold text-gray-800 line-clamp-1">{{ p.title }}</div>
+        <span class="text-xs bg-gray-100 px-2 py-1 rounded">{{ p.category }}</span>
+      </div>
+      <div class="flex gap-4">
+        <img [src]="p.productImage" alt="Product" class="w-24 h-24 object-cover rounded border" />
+        <div class="flex-1 text-sm space-y-1">
+          <div><span class="text-gray-500">Brand:</span> {{ p.brand || '-' }}</div>
+          <div>
+            <span class="text-gray-500">Price:</span>
+            <span class="font-semibold">{{ p.price }}</span>
+          </div>
+          <div>
+            <span class="text-gray-500">Stock:</span>
+            <span class="font-semibold" [class.text-red-600]="p.stock === 0">{{ p.stock }}</span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex flex-wrap gap-2 pt-2 border-t"
+        *ngIf="user?.role === 'Admin' || user?.role === 'Customer'"
+      >
+        <!-- Admin Actions -->
+        <ng-container *ngIf="user?.role === 'Admin'">
+          <button
+            class="flex-1 min-w-[110px] px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+            (click)="openEditForm(p)"
+          >
+            Edit
+          </button>
+          <button
+            class="flex-1 min-w-[110px] px-3 py-2 bg-red-500 text-white rounded text-sm hover:bg-red-600"
+            (click)="deleteProduct(p.id)"
+          >
+            Delete
+          </button>
+        </ng-container>
+        <!-- Customer Action -->
+        <ng-container *ngIf="user?.role === 'Customer'">
+          <button
+            class="flex-1 min-w-[140px] px-3 py-2 bg-yellow-500 text-white rounded text-sm hover:bg-yellow-600"
+            (click)="addToCart(p)"
+          >
+            Add to Cart
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
 </div>
