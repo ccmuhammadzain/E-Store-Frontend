@@ -3,10 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'https://localhost:7188/api/Auth'; 
+  private apiUrl = 'https://localhost:7188/api/Auth';
   private userSubject = new BehaviorSubject<any>(this.getUser());
   user$ = this.userSubject.asObservable();
 
@@ -38,8 +38,12 @@ export class AuthService {
     // Normalize username if missing or numeric-only (id accidentally displayed)
     const normalizeUsername = (u: any) => {
       const current = u?.username || u?.userName || u?.UserName;
-      const isValid = (v: any) => typeof v === 'string' && v.trim().length > 0 && !/^\d+$/.test(v.trim());
-      if (isValid(current)) { u.username = current.trim(); return; }
+      const isValid = (v: any) =>
+        typeof v === 'string' && v.trim().length > 0 && !/^\d+$/.test(v.trim());
+      if (isValid(current)) {
+        u.username = current.trim();
+        return;
+      }
       const token = this.getToken();
       if (token) {
         try {
@@ -54,7 +58,7 @@ export class AuthService {
             payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
             payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
             u?.name,
-            u?.email
+            u?.email,
           ];
           const found = candidates.find(isValid);
           if (found) {
@@ -99,6 +103,6 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-  this.userSubject.next(null);
+    this.userSubject.next(null);
   }
 }

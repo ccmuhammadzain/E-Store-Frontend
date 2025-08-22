@@ -1,0 +1,9 @@
+# Build outputs
+/dist
+/.angular
+
+# Dependencies
+/node_modules
+
+# Generated
+coverage

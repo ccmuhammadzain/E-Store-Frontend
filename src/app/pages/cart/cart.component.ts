@@ -11,7 +11,7 @@ import { AuthService } from '../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './cart.component.html',
-  styleUrls: ['./cart.component.css']
+  styleUrls: ['./cart.component.css'],
 })
 export class CartComponent implements OnInit {
   cart: any[] = [];
@@ -21,8 +21,8 @@ export class CartComponent implements OnInit {
   constructor(
     private cartService: CartService,
     private billService: BillService,
-  private authService: AuthService,
-  private toast: ToastService,
+    private authService: AuthService,
+    private toast: ToastService,
     private router: Router
   ) {}
 
@@ -47,7 +47,7 @@ export class CartComponent implements OnInit {
   }
 
   removeFromCart(id: number) {
-    const item = this.cart.find(p => p.id === id);
+    const item = this.cart.find((p) => p.id === id);
     this.cartService.removeFromCart(id);
     this.loadCart();
     if (item) this.toast.info(`${item.title} removed`);
@@ -91,17 +91,17 @@ export class CartComponent implements OnInit {
 
     const payload: BillCreateDto = { billItems: consolidated };
 
-  console.log('Checkout payload', payload);
+    console.log('Checkout payload', payload);
     this.loading = true;
     this.error = null;
     this.billService.createBill(payload).subscribe({
-      next: bill => {
+      next: (bill) => {
         console.log('Bill created response', bill);
-  this.cartService.clearCart();
+        this.cartService.clearCart();
         this.router.navigate(['/bills'], { state: { newBillId: bill.id, createdBill: bill } });
-  this.toast.success('Order placed');
+        this.toast.success('Order placed');
       },
-      error: err => {
+      error: (err) => {
         console.error('Checkout error', err);
         const backendMsg = err?.error?.error;
         const code = err?.error?.code;
@@ -113,7 +113,7 @@ export class CartComponent implements OnInit {
           // Attempt to extract raw body if no structured error
           if (!backendMsg && err.error && err.error instanceof Blob) {
             const blob = err.error as Blob;
-            blob.text().then(t => console.log('Raw 500 body:', t));
+            blob.text().then((t) => console.log('Raw 500 body:', t));
           }
         } else if (backendMsg) {
           this.error = backendMsg + (code ? ` (code: ${code})` : '');
@@ -121,8 +121,7 @@ export class CartComponent implements OnInit {
           this.error = 'Checkout failed';
         }
       },
-      complete: () => this.loading = false
+      complete: () => (this.loading = false),
     });
   }
 }
-

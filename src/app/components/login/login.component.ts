@@ -7,13 +7,16 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-login',
   imports: [FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
   user = { username: '', passwordHash: '' };
   message = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   onLogin() {
     this.authService.login(this.user).subscribe({
@@ -28,7 +31,7 @@ export class LoginComponent {
           this.router.navigate(['/shop']);
         }
       },
-      error: (err) => this.message = err.error
+      error: (err) => (this.message = err.error),
     });
   }
 }

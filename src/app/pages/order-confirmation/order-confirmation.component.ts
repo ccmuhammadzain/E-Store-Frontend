@@ -7,6 +7,6 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './order-confirmation.component.html',
-  styleUrls: ['./order-confirmation.component.css']
+  styleUrls: ['./order-confirmation.component.css'],
 })
 export class OrderConfirmationComponent {}

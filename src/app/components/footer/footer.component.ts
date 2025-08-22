@@ -8,7 +8,7 @@ import { AuthService } from '../../core/services/auth.service';
   selector: 'app-footer',
   imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './footer.component.html',
-  styleUrl: './footer.component.css'
+  styleUrl: './footer.component.css',
 })
 export class FooterComponent {
   currentYear = 2025;
@@ -18,6 +18,10 @@ export class FooterComponent {
     this.user = this.authService.getUser();
   }
 
-  isCustomer() { return (this.user?.role || '').toLowerCase() === 'customer'; }
-  isAdmin() { return (this.user?.role || '').toLowerCase() === 'admin'; }
+  isCustomer() {
+    return (this.user?.role || '').toLowerCase() === 'customer';
+  }
+  isAdmin() {
+    return (this.user?.role || '').toLowerCase() === 'admin';
+  }
 }

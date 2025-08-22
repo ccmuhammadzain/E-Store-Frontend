@@ -13,54 +13,61 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent },
 
   // Inventory: only Admin can access
-  { 
-    path: 'inventory', 
-    component: InventoryComponent, 
+  {
+    path: 'inventory',
+    component: InventoryComponent,
     canActivate: [authGuard],
-    data: { roles: ['Admin'] } 
+    data: { roles: ['Admin'] },
   },
 
   // Customers: only Admin can access
-  { 
-    path: 'customers', 
-    component: CustomerComponent, 
+  {
+    path: 'customers',
+    component: CustomerComponent,
     canActivate: [authGuard],
-    data: { roles: ['Admin'] } 
+    data: { roles: ['Admin'] },
   },
 
   // Shop: only Customer can access
-  { 
-    path: 'shop', 
-    component: ShopComponent, 
+  {
+    path: 'shop',
+    component: ShopComponent,
     canActivate: [authGuard],
-    data: { roles: ['Customer'] } 
+    data: { roles: ['Customer'] },
   },
 
   // Bills: only Customer can access (Admin optional)
-  { 
-    path: 'bills', 
-    component: BillsComponent, 
+  {
+    path: 'bills',
+    component: BillsComponent,
     canActivate: [authGuard],
-    data: { roles: ['Customer'] } 
+    data: { roles: ['Customer'] },
   },
 
-  { 
-    path: 'order-confirmation', 
-    component: OrderConfirmationComponent, 
+  {
+    path: 'order-confirmation',
+    component: OrderConfirmationComponent,
     canActivate: [authGuard],
-    data: { roles: ['Customer'] } 
+    data: { roles: ['Customer'] },
   },
-  { 
-    path: 'cart', 
+  {
+    path: 'cart',
     component: CartComponent,
     canActivate: [authGuard],
-    data: { roles: ['Customer'] } 
+    data: { roles: ['Customer'] },
   },
 
   // Auth pages
-  { path: 'login', loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent) },
-  { path: 'signup', loadComponent: () => import('./components/signup/signup.component').then(m => m.SignupComponent) },
+  {
+    path: 'login',
+    loadComponent: () => import('./components/login/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'signup',
+    loadComponent: () =>
+      import('./components/signup/signup.component').then((m) => m.SignupComponent),
+  },
 
   // Fallback
-  { path: '**', redirectTo: 'home' }
+  { path: '**', redirectTo: 'home' },
 ];

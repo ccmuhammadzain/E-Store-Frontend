@@ -12,7 +12,7 @@ import { ToastContainerComponent } from '../toast-container/toast-container.comp
   imports: [CommonModule, RouterModule, FormsModule, ToastContainerComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavbarComponent implements OnInit {
   isMenuOpen = false;
@@ -37,17 +37,25 @@ export class NavbarComponent implements OnInit {
     // initialize count
     this.cartItemCount = this.cartService.getTotalItems();
     // subscribe to user changes
-    this.authService.user$.subscribe(u => {
+    this.authService.user$.subscribe((u) => {
       this.currentUser = u;
       this.cdr.markForCheck();
     });
   }
 
-  get user() { return this.currentUser; }
-  get isLoggedIn(): boolean { return !!this.currentUser; }
+  get user() {
+    return this.currentUser;
+  }
+  get isLoggedIn(): boolean {
+    return !!this.currentUser;
+  }
 
-  isAdmin(): boolean { return (this.currentUser?.role || '').toLowerCase() === 'admin'; }
-  isCustomer(): boolean { return (this.currentUser?.role || '').toLowerCase() === 'customer'; }
+  isAdmin(): boolean {
+    return (this.currentUser?.role || '').toLowerCase() === 'admin';
+  }
+  isCustomer(): boolean {
+    return (this.currentUser?.role || '').toLowerCase() === 'customer';
+  }
 
   onSearch(evt: Event) {
     evt.preventDefault();

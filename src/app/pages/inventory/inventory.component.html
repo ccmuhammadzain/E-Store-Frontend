@@ -3,48 +3,95 @@
     <h2 class="text-2xl font-bold">Inventory</h2>
 
     <!-- Only Admin can add products -->
-    <button 
+    <button
       *ngIf="user?.role === 'Admin'"
       class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-      (click)="openAddForm()">
+      (click)="openAddForm()"
+    >
       + Add Product
     </button>
   </div>
 
   <!-- Modal for Admin -->
-  <div *ngIf="showForm && user?.role === 'Admin'" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+  <div
+    *ngIf="showForm && user?.role === 'Admin'"
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+  >
     <div class="bg-white p-6 rounded-lg shadow-lg w-96">
       <h3 class="text-lg font-bold mb-4">{{ isEdit ? 'Edit Product' : 'Add Product' }}</h3>
 
       <form (ngSubmit)="saveProduct()" #productForm="ngForm">
         <div class="mb-3">
           <label class="block mb-1">Title</label>
-          <input type="text" [(ngModel)]="currentProduct.title" name="title" class="w-full border px-3 py-2 rounded" required>
+          <input
+            type="text"
+            [(ngModel)]="currentProduct.title"
+            name="title"
+            class="w-full border px-3 py-2 rounded"
+            required
+          />
         </div>
         <div class="mb-3">
           <label class="block mb-1">Category</label>
-          <input type="text" [(ngModel)]="currentProduct.category" name="category" class="w-full border px-3 py-2 rounded" required>
+          <input
+            type="text"
+            [(ngModel)]="currentProduct.category"
+            name="category"
+            class="w-full border px-3 py-2 rounded"
+            required
+          />
         </div>
         <div class="mb-3">
           <label class="block mb-1">Brand</label>
-          <input type="text" [(ngModel)]="currentProduct.brand" name="brand" class="w-full border px-3 py-2 rounded">
+          <input
+            type="text"
+            [(ngModel)]="currentProduct.brand"
+            name="brand"
+            class="w-full border px-3 py-2 rounded"
+          />
         </div>
         <div class="mb-3">
           <label class="block mb-1">Price</label>
-          <input type="number" [(ngModel)]="currentProduct.price" name="price" class="w-full border px-3 py-2 rounded" required>
+          <input
+            type="number"
+            [(ngModel)]="currentProduct.price"
+            name="price"
+            class="w-full border px-3 py-2 rounded"
+            required
+          />
         </div>
         <div class="mb-3">
           <label class="block mb-1">Stock</label>
-          <input type="number" [(ngModel)]="currentProduct.stock" name="stock" class="w-full border px-3 py-2 rounded" required>
+          <input
+            type="number"
+            [(ngModel)]="currentProduct.stock"
+            name="stock"
+            class="w-full border px-3 py-2 rounded"
+            required
+          />
         </div>
         <div class="mb-3">
           <label class="block mb-1">Image URL</label>
-          <input type="text" [(ngModel)]="currentProduct.productImage" name="productImage" class="w-full border px-3 py-2 rounded">
+          <input
+            type="text"
+            [(ngModel)]="currentProduct.productImage"
+            name="productImage"
+            class="w-full border px-3 py-2 rounded"
+          />
         </div>
 
         <div class="flex justify-end mt-4">
-          <button type="button" class="px-4 py-2 bg-gray-300 rounded mr-2" (click)="showForm = false">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+          <button
+            type="button"
+            class="px-4 py-2 bg-gray-300 rounded mr-2"
+            (click)="showForm = false"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          >
             {{ isEdit ? 'Update' : 'Save' }}
           </button>
         </div>
@@ -70,7 +117,7 @@
       <tr *ngFor="let p of products; let i = index" class="hover:bg-gray-50">
         <td class="px-4 py-2 border-b">{{ i + 1 }}</td>
         <td class="px-4 py-2 border-b">
-          <img [src]="p.productImage" alt="Product" class="w-12 h-12 object-cover rounded">
+          <img [src]="p.productImage" alt="Product" class="w-12 h-12 object-cover rounded" />
         </td>
         <td class="px-4 py-2 border-b">{{ p.title }}</td>
         <td class="px-4 py-2 border-b">{{ p.category }}</td>
@@ -80,13 +127,26 @@
         <td class="px-4 py-2 border-b text-center">
           <!-- Admin Actions -->
           <ng-container *ngIf="user?.role === 'Admin'">
-            <button class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600" (click)="openEditForm(p)">Edit</button>
-            <button class="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 ml-2" (click)="deleteProduct(p.id)">Delete</button>
+            <button
+              class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+              (click)="openEditForm(p)"
+            >
+              Edit
+            </button>
+            <button
+              class="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 ml-2"
+              (click)="deleteProduct(p.id)"
+            >
+              Delete
+            </button>
           </ng-container>
 
           <!-- Customer Actions -->
           <ng-container *ngIf="user?.role === 'Customer'">
-            <button class="px-3 py-1 bg-yellow-500 text-white rounded text-sm hover:bg-yellow-600" (click)="addToCart(p)">
+            <button
+              class="px-3 py-1 bg-yellow-500 text-white rounded text-sm hover:bg-yellow-600"
+              (click)="addToCart(p)"
+            >
               Add to Cart
             </button>
           </ng-container>
