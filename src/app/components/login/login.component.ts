@@ -26,9 +26,9 @@ export class LoginComponent {
 
         // ✅ Navigate based on role
         if (res.role === 'Admin') {
-          this.router.navigate(['/inventory']);
+          this.router.navigate(['/home']);
         } else {
-          this.router.navigate(['/shop']);
+          this.router.navigate(['/home']);
         }
       },
       error: (err) => (this.message = err.error),

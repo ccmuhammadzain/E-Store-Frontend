@@ -7,25 +7,26 @@ import { ShopComponent } from './pages/shop/shop.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { authGuard } from './guards/auth.guard';
 import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
+import { AdminPanelComponent } from './pages/admin-panel/admin-panel.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
 
-  // Inventory: only Admin can access
+  // Inventory: Admin & SuperAdmin (and Seller if backend treats Seller as admin) can access
   {
     path: 'inventory',
     component: InventoryComponent,
     canActivate: [authGuard],
-    data: { roles: ['Admin'] },
+    data: { roles: ['Admin', 'Seller', 'SuperAdmin'] },
   },
 
-  // Customers: only Admin can access
+  // Customers: Admin & SuperAdmin
   {
     path: 'customers',
     component: CustomerComponent,
     canActivate: [authGuard],
-    data: { roles: ['Admin'] },
+    data: { roles: ['Admin', 'Seller', 'SuperAdmin'] },
   },
 
   // Shop: only Customer can access
@@ -36,12 +37,20 @@ export const routes: Routes = [
     data: { roles: ['Customer'] },
   },
 
-  // Bills: only Customer can access (Admin optional)
+  // Bills: only Customer (SuperAdmin/Admin excluded unless requirement changes)
   {
     path: 'bills',
     component: BillsComponent,
     canActivate: [authGuard],
     data: { roles: ['Customer'] },
+  },
+
+  // Admin Panel: SuperAdmin only (lazy placeholder component)
+  {
+    path: 'admin-panel',
+    component: AdminPanelComponent,
+    canActivate: [authGuard],
+    data: { roles: ['SuperAdmin'] },
   },
 
   {
