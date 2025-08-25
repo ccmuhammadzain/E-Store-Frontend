@@ -42,7 +42,7 @@ export class InventoryComponent implements OnInit {
 
   // ✅ Open Add form (Admin only)
   openAddForm(): void {
-    if (this.user?.role !== 'Admin') return;
+  if (!this.authService.isAdmin()) return; // Admin-like (Admin/Seller/SuperAdmin)
 
     this.currentProduct = {
       id: 0,
@@ -59,7 +59,7 @@ export class InventoryComponent implements OnInit {
 
   // ✅ Open Edit form (Admin only)
   openEditForm(product: any): void {
-    if (this.user?.role !== 'Admin') return;
+  if (!this.authService.isAdmin()) return;
 
     this.currentProduct = { ...product };
     this.isEdit = true;
@@ -68,7 +68,7 @@ export class InventoryComponent implements OnInit {
 
   // ✅ Save (POST/PUT) Admin only
   saveProduct(): void {
-    if (this.user?.role !== 'Admin') return;
+  if (!this.authService.isAdmin()) return;
 
     if (this.isEdit) {
       this.inventoryService.updateProduct(this.currentProduct.id, this.currentProduct).subscribe({
@@ -91,7 +91,7 @@ export class InventoryComponent implements OnInit {
 
   // ✅ Delete Admin only
   deleteProduct(id: number): void {
-    if (this.user?.role !== 'Admin') return;
+  if (!this.authService.isAdmin()) return;
 
     this.inventoryService.deleteProduct(id).subscribe({
       next: () => this.getProducts(),
@@ -101,7 +101,7 @@ export class InventoryComponent implements OnInit {
 
   // ✅ Add to cart for Customer
   addToCart(product: any): void {
-    if (this.user?.role !== 'Customer') return;
+  if (!this.authService.isCustomer()) return;
     this.cartService.addToCart(product);
     alert(`${product.title} added to cart!`);
   }

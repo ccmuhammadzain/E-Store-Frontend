@@ -51,10 +51,16 @@ export class NavbarComponent implements OnInit {
   }
 
   isAdmin(): boolean {
-    return (this.currentUser?.role || '').toLowerCase() === 'admin';
+    return this.authService.isAdmin();
   }
   isCustomer(): boolean {
-    return (this.currentUser?.role || '').toLowerCase() === 'customer';
+    return this.authService.isCustomer();
+  }
+  isSuperAdmin(): boolean {
+    return this.authService.isSuperAdmin();
+  }
+  isSeller(): boolean {
+    return this.authService.isSeller();
   }
 
   onSearch(evt: Event) {

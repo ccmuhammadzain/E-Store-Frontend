@@ -1,0 +1,2 @@
+/* Admin Panel Styles (tailwind handles most). Optional overrides */
+:host { display:block; }

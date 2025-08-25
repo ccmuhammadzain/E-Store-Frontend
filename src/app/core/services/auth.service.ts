@@ -96,6 +96,34 @@ export class AuthService {
     return user ? user.role : null;
   }
 
+  // ----------------------
+  // ROLE HELPERS
+  // ----------------------
+  private roleEquals(role: string, target: string) {
+    return role.toLowerCase() === target.toLowerCase();
+  }
+
+  isSuperAdmin(): boolean {
+    const r = (this.getRole() || '').toLowerCase();
+    return r === 'superadmin';
+  }
+
+  isAdmin(): boolean {
+    // Treat Seller as Admin if backend used Seller previously; include SuperAdmin override
+    const r = (this.getRole() || '').toLowerCase();
+    return r === 'admin' || r === 'seller' || r === 'superadmin';
+  }
+
+  isSeller(): boolean {
+    const r = (this.getRole() || '').toLowerCase();
+    return r === 'seller';
+  }
+
+  isCustomer(): boolean {
+    const r = (this.getRole() || '').toLowerCase();
+    return r === 'customer';
+  }
+
   isLoggedIn(): boolean {
     return !!this.getToken();
   }

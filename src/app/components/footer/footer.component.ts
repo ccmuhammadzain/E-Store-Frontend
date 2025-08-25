@@ -22,6 +22,13 @@ export class FooterComponent {
     return (this.user?.role || '').toLowerCase() === 'customer';
   }
   isAdmin() {
-    return (this.user?.role || '').toLowerCase() === 'admin';
+    const r = (this.user?.role || '').toLowerCase();
+    return r === 'admin' || r === 'seller' || r === 'superadmin';
+  }
+  isSuperAdmin() {
+    return (this.user?.role || '').toLowerCase() === 'superadmin';
+  }
+  isSeller() {
+    return (this.user?.role || '').toLowerCase() === 'seller';
   }
 }

@@ -2,9 +2,9 @@
   <div class="flex justify-between items-center mb-4">
     <h2 class="text-2xl font-bold">Inventory</h2>
 
-    <!-- Only Admin can add products -->
+    <!-- Admin-like roles (Admin/Seller/SuperAdmin) can add products -->
     <button
-      *ngIf="user?.role === 'Admin'"
+      *ngIf="user && ['admin','seller','superadmin'].includes(user.role?.toLowerCase())"
       class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
       (click)="openAddForm()"
     >
@@ -14,7 +14,7 @@
 
   <!-- Modal for Admin -->
   <div
-    *ngIf="showForm && user?.role === 'Admin'"
+    *ngIf="showForm && user && ['admin','seller','superadmin'].includes(user.role?.toLowerCase())"
     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
   >
     <div class="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -127,8 +127,8 @@
             <td class="px-4 py-2 border-b text-right">{{ p.price }}</td>
             <td class="px-4 py-2 border-b text-right">{{ p.stock }}</td>
             <td class="px-4 py-2 border-b text-center">
-              <!-- Admin Actions -->
-              <ng-container *ngIf="user?.role === 'Admin'">
+              <!-- Admin-like Actions -->
+              <ng-container *ngIf="user && ['admin','seller','superadmin'].includes(user.role?.toLowerCase())">
                 <button
                   class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
                   (click)="openEditForm(p)"
@@ -186,10 +186,10 @@
       </div>
       <div
         class="flex flex-wrap gap-2 pt-2 border-t"
-        *ngIf="user?.role === 'Admin' || user?.role === 'Customer'"
+  *ngIf="user && (['admin','seller','superadmin'].includes(user.role?.toLowerCase()) || user.role?.toLowerCase() === 'customer')"
       >
         <!-- Admin Actions -->
-        <ng-container *ngIf="user?.role === 'Admin'">
+  <ng-container *ngIf="user && ['admin','seller','superadmin'].includes(user.role?.toLowerCase())">
           <button
             class="flex-1 min-w-[110px] px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
             (click)="openEditForm(p)"

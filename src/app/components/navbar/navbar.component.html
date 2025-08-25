@@ -36,7 +36,8 @@
       <li *ngIf="isCustomer()">
         <a routerLink="/shop" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">Shop</a>
       </li>
-      <li *ngIf="user">
+      <!-- Bills: visible only to customers (exclude admins & super admins) -->
+      <li *ngIf="isCustomer()">
         <a routerLink="/bills" routerLinkActive="text-yellow-400" class="hover:text-yellow-300">Bills</a>
       </li>
       <li *ngIf="isCustomer()">
@@ -56,6 +57,11 @@
       <li *ngIf="isAdmin()">
         <a routerLink="/customers" routerLinkActive="text-yellow-400" class="hover:text-yellow-300"
           >Customers</a
+        >
+      </li>
+      <li *ngIf="isSuperAdmin()">
+        <a routerLink="/admin-panel" routerLinkActive="text-yellow-400" class="hover:text-yellow-300"
+          >Admin Panel</a
         >
       </li>
     </ul>
@@ -148,6 +154,7 @@
           >Shop</a
         >
       </li>
+      <!-- Bills (mobile): only customers -->
       <li *ngIf="isCustomer()">
         <a
           routerLink="/bills"
@@ -155,6 +162,16 @@
           class="hover:text-yellow-300"
           (click)="isMenuOpen=false"
           >Bills</a
+        >
+      </li>
+      <!-- Super Admin Panel (mobile) -->
+      <li *ngIf="isSuperAdmin()">
+        <a
+          routerLink="/admin-panel"
+          routerLinkActive="text-yellow-400"
+          class="hover:text-yellow-300"
+          (click)="isMenuOpen=false"
+          >Admin Panel</a
         >
       </li>
       <li *ngIf="isCustomer()">

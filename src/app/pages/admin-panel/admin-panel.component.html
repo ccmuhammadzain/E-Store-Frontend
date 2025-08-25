@@ -1,0 +1,97 @@
+<div class="max-w-7xl mx-auto px-4 py-6" *ngIf="canView(); else noAccess">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+    <h1 class="text-2xl font-semibold text-gray-800">Admin / Seller Management</h1>
+    <div class="flex items-center gap-3">
+      <input
+        type="text"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+        placeholder="Search admins..."
+        class="bg-gray-700 text-sm px-3 py-2 rounded border border-gray-600 focus:outline-none focus:ring focus:ring-yellow-500/30"
+      />
+      <button (click)="load()" class="bg-gray-700 text-gray-400 hover:bg-gray-600 text-sm px-4 py-2 rounded">
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Aggregate Summary -->
+  <div *ngIf="hasMetrics()" class="grid gap-4 md:grid-cols-3 lg:grid-cols-6 mb-6 text-sm">
+    <div class="bg-gray-800 p-3 rounded border border-gray-700"><div class="text-gray-400">Total Orders</div><div class="text-white font-semibold text-lg">{{ aggregate().totalOrders }}</div></div>
+    <div class="bg-gray-800 p-3 rounded border border-gray-700"><div class="text-gray-400">Paid</div><div class="text-green-400 font-semibold text-lg">{{ aggregate().paidOrders }}</div></div>
+    <div class="bg-gray-800 p-3 rounded border border-gray-700"><div class="text-gray-400">Pending</div><div class="text-yellow-400 font-semibold text-lg">{{ aggregate().pendingOrders }}</div></div>
+    <div class="bg-gray-800 p-3 rounded border border-gray-700"><div class="text-gray-400">Canceled</div><div class="text-red-400 font-semibold text-lg">{{ aggregate().canceledOrders }}</div></div>
+    <div class="bg-gray-800 p-3 rounded border border-gray-700"><div class="text-gray-400">Revenue (Paid)</div><div class="text-emerald-400 font-semibold text-lg">{{ aggregate().totalRevenue | currency }}</div></div>
+    <div class="bg-gray-800 p-3 rounded border border-gray-700"><div class="text-gray-400">Rev (Pending)</div><div class="text-orange-400 font-semibold text-lg">{{ aggregate().pendingRevenue | currency }}</div></div>
+  </div>
+  <div *ngIf="metricsMissing()" class="mb-4 text-xs text-yellow-400">Metrics endpoint missing; showing placeholder zero values.</div>
+
+  <div *ngIf="loading()" class="text-gray-400">Loading metrics...</div>
+  <div *ngIf="!loading() && filtered().length === 0" class="text-gray-400">No admins/sellers found.</div>
+
+  <div class="space-y-4" *ngIf="!loading()">
+    <div *ngFor="let a of filtered()" class="bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
+      <div class="p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-3">
+            <h2 class="text-lg font-semibold text-white">{{ a.username }}</h2>
+            <span class="text-xs px-2 py-0.5 rounded bg-indigo-600 text-white uppercase tracking-wide">{{ a.role }}</span>
+            <span *ngIf="a.isActive === false" class="text-xs px-2 py-0.5 rounded bg-red-600 text-white">Inactive</span>
+          </div>
+          <div class="mt-1 text-sm text-gray-400" *ngIf="a.email">{{ a.email }}</div>
+          <div class="mt-1 text-xs text-gray-500" *ngIf="a.createdAt">Joined: {{ a.createdAt | date:'mediumDate' }}</div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button class="px-3 py-1.5 text-xs bg-blue-600 hover:bg-blue-500 text-white rounded" (click)="toggle(a.id)">
+            {{ expanded().has(a.id) ? 'Hide' : 'Details' }}
+          </button>
+          <button class="px-3 py-1.5 text-xs bg-yellow-600 hover:bg-yellow-500 text-white rounded" (click)="promote(a)">Promote</button>
+          <button class="px-3 py-1.5 text-xs bg-gray-600 hover:bg-gray-500 text-white rounded" (click)="resetPassword(a)">Reset PW</button>
+          <button class="px-3 py-1.5 text-xs bg-red-600 hover:bg-red-500 text-white rounded" (click)="deactivate(a)">Deactivate</button>
+        </div>
+      </div>
+      <div *ngIf="expanded().has(a.id)" class="border-t border-gray-700 p-4 bg-gray-900 text-sm">
+        <div *ngIf="a.metrics; else noMetrics" class="grid gap-4 md:grid-cols-3">
+          <div>
+            <div class="text-gray-400">Total Orders</div>
+            <div class="text-white font-semibold text-lg">{{ a.metrics.totalOrders }}</div>
+          </div>
+          <div>
+            <div class="text-gray-400">Paid Orders</div>
+            <div class="text-green-400 font-semibold text-lg">{{ a.metrics.paidOrders }}</div>
+          </div>
+          <div>
+            <div class="text-gray-400">Pending Orders</div>
+            <div class="text-yellow-400 font-semibold text-lg">{{ a.metrics.pendingOrders }}</div>
+          </div>
+          <div>
+            <div class="text-gray-400">Canceled</div>
+            <div class="text-red-400 font-semibold text-lg">{{ a.metrics.canceledOrders }}</div>
+          </div>
+          <div>
+            <div class="text-gray-400">Revenue (Paid)</div>
+            <div class="text-emerald-400 font-semibold text-lg">{{ a.metrics.totalRevenue | currency }}</div>
+          </div>
+            <div>
+              <div class="text-gray-400">Revenue (Pending)</div>
+              <div class="text-orange-400 font-semibold text-lg">{{ a.metrics.pendingRevenue | currency }}</div>
+            </div>
+          <div class="col-span-full" *ngIf="a.metrics.lastPaidAt">
+            <div class="text-gray-400">Last Payment</div>
+            <div class="text-white">{{ a.metrics.lastPaidAt | date:'short' }}</div>
+          </div>
+        </div>
+        <ng-template #noMetrics>
+          <div class="text-gray-500">No metrics yet for this admin/seller.</div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noAccess>
+  <div class="max-w-xl mx-auto p-8 text-center text-gray-300">
+    <h2 class="text-xl font-semibold mb-2">Access Restricted</h2>
+    <p class="text-sm text-gray-400">You must be a SuperAdmin to view this panel.</p>
+  </div>
+</ng-template>
